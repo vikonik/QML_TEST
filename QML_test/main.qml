@@ -1,7 +1,7 @@
-import QtQuick 2.15
-import QtQuick.Window 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+import QtQuick 2.0
+import QtQuick.Window 2.0
+import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.0
 import StyleSetting 1.0
 
 ApplicationWindow {
@@ -234,6 +234,61 @@ ApplicationWindow {
             border.color: Style.borderColor
             border.width: 1
             radius: 10
+
+            Rectangle{
+            width: 100
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            color: "transparent"
+            Image {
+                id:pictoConnectedPort
+                width: 21
+                height: 21
+anchors.verticalCenter: parent.verticalCenter
+anchors.left: parent.left
+anchors.leftMargin: 10
+                source: "qrc:/Image/pictoConnectedPort.png"
+            }
+            Text{
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: pictoConnectedPort.right
+                anchors.leftMargin: 10
+                text: "Port: " + comPort_part.comboBox.currentText
+                color: Style.fontColorValue
+                font.pixelSize: Style.fontSizeValue
+                font.styleName: Style.fontValue
+            }
+
+            }
+
+            Rectangle{//Изменение цветовой темы
+                width: 100
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.right: parent.right
+                color: "transparent"
+
+                Image {
+                    id:pictoTeme
+                    width: 21
+                    height: 21
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.right:  parent.right
+    anchors.rightMargin: 10
+                    source: "qrc:/Image/pictoTeme.png"
+                }
+
+                Text{
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: pictoTeme.left
+                    anchors.rightMargin: 10
+                    text: "Theme:"
+                    color: Style.fontColorValueStatusPanel
+                    font.pixelSize: Style.fontSizeValueStatusPanel
+                    font.styleName: Style.fontValueStatusPanel
+                }
+            }
         }
         /***********************************/
 
@@ -252,7 +307,7 @@ ApplicationWindow {
             z: 2
 
             ComPort {
-
+                id:comPort_part
                 width: 240-13-13//Посчитали из дизайна
                 height: 63
                 anchors.top: parent.top
@@ -341,6 +396,10 @@ ApplicationWindow {
                 color: Style.backgroundColor
                 border.width: 1
                 border.color: Style.borderColor
+                   CustomTable{
+
+                   }
+
             }
 
         }

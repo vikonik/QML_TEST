@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 2.15
+import QtQuick.Controls 2.12
 import StyleSetting 1.0
 
 CustomButton {
@@ -13,5 +13,30 @@ CustomButton {
     hoverImage: "qrc:/Image/buttonsScanID/buttonScanID_hover.png"
     pressedImage: "qrc:/Image/buttonsScanID/buttonScanID_preset.png"
 
-    onClicked: console.log("button buttonsScanID clicked")
+    onClicked:
+    {console.log("button buttonsScanID clicked")
+                    calendarDialog.open() // Открытие окна календаря при нажатии
+                }
+
+    // Диалог с календарем
+    //            Dialog {
+    //                id: calendarDialog
+    //                title: "Select a Date"
+
+    //                // Календарь для выбора даты
+    //                DatePicker {
+    //                    id: datePicker
+    //                    selectedDate: selectedDate
+
+    //                    onAccepted: {
+    //                        selectedDate = datePicker.selectedDate
+    //                        dateField.text = selectedDate.toLocaleString() // Обновляем текст в поле
+    //                        datePickerDialog.close() // Закрытие диалога после выбора даты
+    //                    }
+
+    //                    onRejected: {
+    //                        datePickerDialog.close() // Закрытие диалога, если отмена
+    //                    }
+    //                }
+    //            }
 }

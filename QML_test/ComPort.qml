@@ -1,8 +1,9 @@
 import QtQuick 2.4
-import QtQuick.Controls 2.15
+import QtQuick.Controls 2.12
 import StyleSetting 1.0
 
 Item {
+    property alias comboBox: comboBox // Делаем ComboBox доступным извне
     Text{
         id: labelComPort
         text: "Com Port"

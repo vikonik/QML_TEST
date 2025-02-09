@@ -89,5 +89,8 @@
         <file>Image/buttonsFotmControl/buttonFormHide.png</file>
         <file>Image/buttonsFotmControl/buttonFormMax.png</file>
         <file>ButtonFormControl.qml</file>
+        <file>Image/pictoConnectedPort.png</file>
+        <file>Image/pictoTeme.png</file>
+        <file>CustomTable.qml</file>
     </qresource>
 </RCC>
