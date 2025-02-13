@@ -28,8 +28,8 @@ Rectangle {
                 defaultImage: "qrc:/Image/buttonsBlindsControlGroup/buttonBlindsGroupUp_default.png"
                 hoverImage: "qrc:/Image/buttonsBlindsControlGroup/buttonBlindsGroupUp_hover.png"
                 pressedImage: "qrc:/Image/buttonsBlindsControlGroup/buttonBlindsGroupUp_preset.png"
-
-                onClicked: console.log("button_UP clicked")
+                buttonId: "buttonGroupUp"
+                //onClicked: console.log("button_UP clicked")
             }
 
             CustomButton{
@@ -41,8 +41,8 @@ Rectangle {
                 defaultImage: "qrc:/Image/buttonsBlindsControlGroup/buttonBlindsGroupDown_default.png"
                 hoverImage: "qrc:/Image/buttonsBlindsControlGroup/buttonBlindsGroupDown_hover.png"
                 pressedImage: "qrc:/Image/buttonsBlindsControlGroup/buttonBlindsGroupDown_preset.png"
-
-                onClicked: console.log("button_UP clicked")
+                buttonId: "buttonGroupDown"
+                //onClicked: console.log("button_UP clicked")
             }
 
         }
@@ -86,7 +86,7 @@ Rectangle {
                 defaultImage: "qrc:/Image/buttonsBlindsControlGroup/buttonBlindsGroupUpLeft_defaut.png"
                 hoverImage: "qrc:/Image/buttonsBlindsControlGroup/buttonBlindsGroupUpLeft_hover.png"
                 pressedImage: "qrc:/Image/buttonsBlindsControlGroup/buttonBlindsGroupUpLeft_preset.png"
-
+                buttonId: "buttonGroupUpLeft"
                 onClicked: console.log("button_UP clicked")
             }
 
@@ -100,7 +100,8 @@ Rectangle {
                 hoverImage: "qrc:/Image/buttonsBlindsControlGroup/buttonBlindsGroupDownRight_hover.png"
                 pressedImage: "qrc:/Image/buttonsBlindsControlGroup/buttonBlindsGroupDownRight_preset.png"
 
-                onClicked: console.log("button_UP clicked")
+                 buttonId: "buttonGroupDownRight"
+                 onClicked: console.log("button_UP clicked")
             }
 
         }

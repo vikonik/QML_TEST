@@ -31,14 +31,15 @@ Item {
                 id: comboBox
                 width: 123//parent.width
                 height: 42//parent.height
-                //            anchors.top: labelComPort.bottom
-                //            anchors.topMargin: 5 // Отступ сверху
-                //            x: labelComPort.x
 
-                model: ["Option 1", "Option 2", "Option 3"] // Данные для ComboBox
+               // model: ["Option 1", "Option 2", "Option 3"] // Данные для ComboBox
+                model: comboBoxModel.items  // Привязываем данные из C++
                 font.family: Style.fontValue // Тип шрифта
                 font.pixelSize: Style.fontSizeValue // Размер шрифта
-
+                onActivated: {
+                    comboBoxModel.currentIndex = currentIndex;
+                    console.log("Выбрано:", comboBoxModel.currentText);
+                }
 
                 //            // Цвет текста текущего выбранного элемента
                 //            textRole: "color"
@@ -167,7 +168,7 @@ Item {
             defaultImage: "qrc:/Image/ComPortConnect_idl.png"
             hoverImage: "qrc:/Image/ComPortConnect_select.png"
             pressedImage: "qrc:/Image/ComPortConnect_Preset.png"
-
+            buttonId: "rectButtonConnect"
             onClicked: console.log("Disconnect button clicked")
         }
 
@@ -181,7 +182,7 @@ Item {
             defaultImage: "qrc:/Image/ComPortDisconnect_idl.png"
             hoverImage: "qrc:/Image/ComPortDsconnect_select.png"
             pressedImage: "qrc:/Image/ComPortDisconnect_Preset.png"
-
+            buttonId: "rectButtonDisconnect"
             onClicked: console.log("Disconnect button clicked")
         }
 

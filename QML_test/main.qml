@@ -142,9 +142,11 @@ ApplicationWindow {
             /*****************************/
             //Кнопки управления окном
             ButtonFormControl{
+                id: buttonFormControl
 //                x:1160
 //                y:12
                 anchors.right: parent.right
+
                 onMinimizeClicked: {
                     console.log("Minimize button clicked")
                     // Добавьте действие для минимизации окна
@@ -347,15 +349,19 @@ anchors.leftMargin: 10
 
 
             ButtonsBlindsControl{
+                id: buttonsBlindsControl
                 x: 17
                 y: 503 - titleBar.height
                 buttonText: "Reset"
+                buttonId:"buttonsBlindsControl"
             }
 
             ButtonsBlindsControl{
+                id: buttonsBlindsControlAll
                 x: 17
                 y: 651 - titleBar.height
                 buttonText: "Reset all"
+                buttonId:"buttonsBlindsControlAll"
             }
 
             ButtonsBlindsControlGroup{

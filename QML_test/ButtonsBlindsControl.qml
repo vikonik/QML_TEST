@@ -4,12 +4,13 @@ import QtQuick.Controls 2.12
 import StyleSetting 1.0
 
 Rectangle {
+       id:_buttonsBlindsControl
        width: 223
        height: 129
        color: "transparent"
 
        property string buttonText: "Button"
-
+       property string buttonId: ""
        //Кнопка Reset
 Rectangle{
     id: button
@@ -33,12 +34,6 @@ Rectangle{
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-
-        // Это выполняем в коде
-        // onClicked: {
-        //     buttonImage.source = "qrc:/Image/ComPortDisconnect_Preset.png"  // Изображение при нажатии
-        // console.log("buttonImage: onClicked")
-        // }
 
         onReleased: {// Изображение при наведении
             text.color = Style.buttonHoverBorderColor
@@ -104,8 +99,7 @@ Rectangle{//Чтобы сделать голубой фон за кнопкам�
             defaultImage: "qrc:/Image/buttonsBlindsControl/buttonBlindsUp_default.png"
             hoverImage: "qrc:/Image/buttonsBlindsControl/buttonBlindsUp_hover.png"
             pressedImage: "qrc:/Image/buttonsBlindsControl/buttonBlindsUp_preset.png"
-
-            onClicked: console.log("button_UP clicked")
+            buttonId: _buttonsBlindsControl.buttonId+"button_UP"
         }
 
         CustomButton {
@@ -117,8 +111,7 @@ Rectangle{//Чтобы сделать голубой фон за кнопкам�
             defaultImage: "qrc:/Image/buttonsBlindsControl/buttonBlindsUpLeft_default.png"
             hoverImage: "qrc:/Image/buttonsBlindsControl/buttonBlindsUpLeft_hover.png"
             pressedImage: "qrc:/Image/buttonsBlindsControl/buttonBlindsUpLeft_preset.png"
-
-            onClicked: console.log("button_UpLeft clicked")
+            buttonId: _buttonsBlindsControl.buttonId+"button_UpLeft"
         }
     }
 
@@ -136,8 +129,8 @@ Rectangle{//Чтобы сделать голубой фон за кнопкам�
             defaultImage: "qrc:/Image/buttonsBlindsControl/buttonBlindsStop_default.png"
             hoverImage: "qrc:/Image/buttonsBlindsControl/buttonBlindsStop_hover.png"
             pressedImage: "qrc:/Image/buttonsBlindsControl/buttonBlindsStop_preset.png"
-
-            onClicked: console.log("button_Stop clicked")
+            buttonId: _buttonsBlindsControl.buttonId+"button_Stop"
+           // onClicked: console.log("button_Stop clicked")
         }
 
     }
@@ -156,8 +149,8 @@ Rectangle{//Чтобы сделать голубой фон за кнопкам�
             defaultImage: "qrc:/Image/buttonsBlindsControl/buttonBlindsDown_default.png"
             hoverImage: "qrc:/Image/buttonsBlindsControl/buttonBlindsDown_hover.png"
             pressedImage: "qrc:/Image/buttonsBlindsControl/buttonBlindsDown_preset.png"
-
-            onClicked: console.log("button_Down clicked")
+            buttonId: _buttonsBlindsControl.buttonId+"button_Down"
+          //  onClicked: console.log("button_Down clicked")
 
 
         }
@@ -170,8 +163,8 @@ Rectangle{//Чтобы сделать голубой фон за кнопкам�
             defaultImage: "qrc:/Image/buttonsBlindsControl/buttonBlindsDownRight_default.png"
             hoverImage: "qrc:/Image/buttonsBlindsControl/buttonBlindsDownRight_hover.png"
             pressedImage: "qrc:/Image/buttonsBlindsControl/buttonBlindsDownRight_preset.png"
-
-            onClicked: console.log("button_UpLeft clicked")
+            buttonId: _buttonsBlindsControl.buttonId+"button_Down"
+           // onClicked: console.log("button_UpLeft clicked")
         }
     }
 }

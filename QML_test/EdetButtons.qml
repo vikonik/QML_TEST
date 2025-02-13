@@ -21,7 +21,7 @@ Rectangle{
                     defaultImage: "qrc:/Image/buttonEbit/buttonDefaultSetup_default.png"
                     hoverImage: "qrc:/Image/buttonEbit/buttonDefaultSetup_hover.png"
                     pressedImage: "qrc:/Image/buttonEbit/buttonDefaultSetup_preset.png"
-
+buttonId: "button_DefaultSetup"
                     onClicked: console.log("button_DefaultSetup clicked")
 
                 }
@@ -34,7 +34,7 @@ Rectangle{
                     defaultImage: "qrc:/Image/buttonEbit/buttonCopy_default.png"
                     hoverImage: "qrc:/Image/buttonEbit/buttonCopy_hover.png"
                     pressedImage: "qrc:/Image/buttonEbit/buttonCopy_preset.png"
-
+buttonId: "button_Copy"
                     onClicked: console.log("button_DefaultSetup clicked")
                 }
 
@@ -52,7 +52,7 @@ Rectangle{
                     defaultImage: "qrc:/Image/buttonEbit/buttonDownloadSetup_default.png"
                     hoverImage: "qrc:/Image/buttonEbit/buttonDownloadSetup_hover.png"
                     pressedImage: "qrc:/Image/buttonEbit/buttonDownloadSetup_preset.png"
-
+buttonId: "button_DownloadSetup"
                     onClicked: console.log("button_DefaultSetup clicked")
                 }
 
@@ -64,7 +64,7 @@ Rectangle{
                     defaultImage: "qrc:/Image/buttonEbit/buttonPaste_default.png"
                     hoverImage: "qrc:/Image/buttonEbit/buttonPaste_hover.png"
                     pressedImage: "qrc:/Image/buttonEbit/buttonPaste_preset.png"
-
+buttonId: "button_Paste"
                     onClicked: console.log("button_DefaultSetup clicked")
                 }
             }

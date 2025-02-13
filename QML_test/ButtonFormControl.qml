@@ -24,7 +24,14 @@ Rectangle {
             defaultImage: "qrc:/Image/buttonsFotmControl/buttonFormHide.png"
             hoverImage: "qrc:/Image/buttonsFotmControl/buttonFormHide.png"
             pressedImage: "qrc:/Image/buttonsFotmControl/buttonFormHide.png"
-            onClicked: minimizeClicked()
+            MouseArea {//Здесь так
+                anchors.fill: parent
+                onClicked: {
+                    console.log("button_minimizeClicked clicked !111");
+                   minimizeClicked()  // Сигнал передается наверх
+                }
+            }
+
         }
         CustomButton{
             width: 12
@@ -34,6 +41,14 @@ Rectangle {
             hoverImage: "qrc:/Image/buttonsFotmControl/buttonFormMax.png"
             pressedImage: "qrc:/Image/buttonsFotmControl/buttonFormMax.png"
             onClicked: maximizeClicked()
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    console.log("button_maximizeClicked clicked !111");
+                   maximizeClicked()  // Сигнал передается наверх
+                }
+            }
+
         }
         CustomButton{
             width: 12
@@ -42,7 +57,13 @@ Rectangle {
             defaultImage: "qrc:/Image/buttonsFotmControl/buttonFormClose.png"
             hoverImage: "qrc:/Image/buttonsFotmControl/buttonFormClose.png"
             pressedImage: "qrc:/Image/buttonsFotmControl/buttonFormClose.png"
-            onClicked: closeClicked()
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    console.log("button_Close clicked !111");
+                   closeClicked()  // Сигнал передается наверх
+                }
+            }
         }
     }
 }
