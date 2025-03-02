@@ -19,6 +19,7 @@ SOURCES += \
         debug.cpp \
         main.cpp \
         mainlogick.cpp \
+        rfmax.cpp \
         serial.cpp
 
 RESOURCES += qml.qrc
@@ -41,6 +42,7 @@ HEADERS += \
     comboboxmodel.h \
     debug.h \
     mainlogick.h \
+    rfmax.h \
     serial.h
 
 FORMS += \
