@@ -17,7 +17,7 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
-
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
 
@@ -28,15 +28,19 @@ public:
     void fetchMore(const QModelIndex &parent) override;
 
     // Работа с файлом
-    bool loadFromFile(const QString& filePath);
-    bool saveToFile(const QString& filePath);
+    Q_INVOKABLE bool loadFromFile(const QString& filePath);
+//    Q_INVOKABLE bool saveToFile(const QString& filePath);
 
     // Выбор строки
     Q_INVOKABLE void selectRow(int row);
     int selectedRow() const { return m_selectedRow; }
 
+    Q_INVOKABLE bool isColumnEditable(int column) const {
+        return editableColumns.contains(column);
+    }
 signals:
     void rowSelected(int row);
+    void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
 
 private:
     QVector<QStringList> m_data;
@@ -51,6 +55,7 @@ private:
 
     // Столбцы, доступные для редактирования
     QSet<int> editableColumns{2, 4, 6, 8, 10};
+    void loadBatch(int start, int count);
 };
 
 #endif // TABLEMODEL_H
