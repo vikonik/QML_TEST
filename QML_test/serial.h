@@ -39,7 +39,7 @@ signals:
 
 public slots:
 bool sendData(const QString &data);
-bool sendData(const QByteArray &data);
+bool sendData(QByteArray *data);
 void readData();
 private:
 

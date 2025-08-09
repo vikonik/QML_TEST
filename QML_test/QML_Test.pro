@@ -1,4 +1,4 @@
-QT += quick serialport core gui widgets
+QT += quick  core gui widgets serialport
 
 CONFIG += c++11
 
@@ -41,6 +41,7 @@ HEADERS += \
     buttonhandler.h \
     comboboxmodel.h \
     debug.h \
+    fifo.h \
     mainlogick.h \
     rfmax.h \
     serial.h

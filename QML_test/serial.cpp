@@ -67,11 +67,9 @@ QStringList Serial::getSerialPort(){
 }
 
 /**/
-bool Serial::sendData(const QByteArray &data) {
+bool Serial::sendData(QByteArray *data) {
     if (serial.isOpen()) {
-        qint64 bytesWritten = serial.write(data);
-
-
+        qint64 bytesWritten = serial.write(*data);
     }
     return 1;
 }
