@@ -11,7 +11,9 @@ void ButtonHandler::onButtonClicked(const QString &buttonId) {
 
     // Карта соответствия названий кнопок и функций-обработчиков
     static const QMap<QString, std::function<void()>> actions = {
-        {"button_ScanID", []() {  qDebug() << "Запуск процесса"; }}
+        {"button_ScanID", [this]() {  emit signalSkanID(); qDebug() << "Запуск процесса"; }},
+        {"rectButtonConnect", [this]() { emit signalConnect();  qDebug() << "Подключить порт"; }},
+        {"rectButtonDisconnect", [this]() { emit signalDisconnect(); qDebug() << "Отключить порт"; }}
 //        {"stop", [this]() { stopProcess(); }},
 //        {"reset", [this]() { resetProcess(); }}
     };
@@ -26,3 +28,7 @@ void ButtonHandler::onButtonClicked(const QString &buttonId) {
 }
 
 /**/
+void ButtonHandler::print(){
+    qDebug() << "С++ Button clicked: print";
+emit signalConnect();
+}

@@ -4,35 +4,45 @@
 #include <QDebug>
 #include<QString>
 #include <QObject> // Это важно для работы с сигналами и слотами
+#include "comboboxmodel.h"
+#include "buttonhandler.h"
 
-
-MainLogick::MainLogick(QObject *parent) : QObject(parent)
+MainLogick::MainLogick(QObject *parent) : QObject(parent),
+    comboBoxModel()
 {
-    qDebug() << "MainLogick";
+    qDebug() << "MainLogick initialization";
+
+    // Инициализация компонентов
     rfMax = new RFMax();
-     debugWindow = new Debug();
-     deviceType.clear();
-    debugWindow->show();
-
-    debugWindow->log(QString("MainLogick"));
+    debugWindow = new Debug();
     serial = new Serial();
-    serial->readPorlList();
-    QStringList comPorts = serial->getSerialPort();
-    // Проверяем, что список не пуст
-    if (!comPorts.isEmpty()) {
-        QString logString = comPorts.join("\n");  // Преобразуем список в строку
-        // Выводим лог
-        debugWindow->log(QString("Найденные COM-порты"));
-        debugWindow->log(logString);
-    } else {
-        // Если список пуст
-        QString errorMessage = "No COM ports available!";
+    buttonHandler = new ButtonHandler();// Инициализируем ButtonHandler
+    tableModel = new TableModel();
 
-        // Выводим сообщение об ошибке
-        debugWindow->log(errorMessage);
-    }
+    deviceType.clear();
 
+    // Показываем окно отладки
+    debugWindow->show();
+    debugWindow->log("MainLogick initialized");
+
+    // Инициализация модели начальными данными
+    comboBoxModel.setItems({"Scanning ports..."});
+
+    // Обновляем список COM-портов
+    refreshComPorts();
+
+    // Настраиваем соединения
     setConnect();
+
+}
+
+/**/
+MainLogick::~MainLogick()
+{
+    delete rfMax;
+    delete debugWindow;
+    delete serial;
+    delete buttonHandler;
 
 }
 
@@ -40,19 +50,49 @@ MainLogick::MainLogick(QObject *parent) : QObject(parent)
 Настраиваем connect
 */
 void MainLogick::setConnect(){
+    connect(buttonHandler, &ButtonHandler::signalConnect, this, &MainLogick::openPort);
+    connect(buttonHandler, &ButtonHandler::signalDisconnect, serial, &Serial::closePort);
     connect(this, SIGNAL(signalSendData(QByteArray*)), serial, SLOT(sendData(QByteArray*)));
-//connect(this, &MainLogick::signalSendData, serial, &Serial::sendData);
-//connect(this, &MainLogick::signalSendData, serial, &Serial::sendData);
+////connect(this, &MainLogick::signalSendData, serial, &Serial::sendData);
+////connect(this, &MainLogick::signalSendData, serial, &Serial::sendData);
+//    // Добавляем соединение для обработки полученных данных
+//    connect(serial, &Serial::dataReceived, this, &MainLogick::detectDeviceType);
+}
 
+/**/
+void MainLogick::openPort(){
+    qDebug() << "comboBoxModel.currentIndex() " + QString::number(comboBoxModel.currentIndex());
+    serial->openPort(comboBoxModel.currentIndex(),19200);
+
+
+}
+/**/
+void MainLogick::refreshComPorts()
+{
+    debugWindow->log("Refreshing COM ports...");
+    serial->readPorlList();
+    QStringList comPorts = serial->getSerialPort();
+
+    // Обновляем модель
+    if (!comPorts.isEmpty()) {
+        comboBoxModel.setItems(comPorts);
+        comboBoxModel.setCurrentIndex(0);
+        QString logMsg = "Available COM ports: " + comPorts.join(", ");
+        debugWindow->log(logMsg);
+    } else {
+        comboBoxModel.setItems({"No COM ports found"});
+        debugWindow->log("No COM ports available!");
+    }
 }
 
 
 /*
 Отправляем запрос на сканирование сети
 */
-void MainLogick::scanNet(){
-    QByteArray command;
-    command.append(">Scan?<");
+void MainLogick::scanNet()
+{
+    debugWindow->log("Starting network scan...");
+    QByteArray command = ">Scan?<";
     emit signalSendData(&command);
 }
 

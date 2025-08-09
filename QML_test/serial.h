@@ -41,12 +41,13 @@ public slots:
 bool sendData(const QString &data);
 bool sendData(QByteArray *data);
 void readData();
+bool openPort(int index, qint32 baudRate);
+void closePort();
 private:
 
 
     void baseSetting();
-    bool openPort(int index, qint32 baudRate);
-    void closePort();
+
 
     Settings m_currentSettings;
 //    QIntValidator *m_intValidator = nullptr;

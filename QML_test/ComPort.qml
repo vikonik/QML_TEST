@@ -169,7 +169,7 @@ Item {
             hoverImage: "qrc:/Image/ComPortConnect_select.png"
             pressedImage: "qrc:/Image/ComPortConnect_Preset.png"
             buttonId: "rectButtonConnect"
-            onClicked: console.log("Disconnect button clicked")
+      //      onClicked: console.log("Сonnect button clicked")
         }
 
         CustomButton {
@@ -183,7 +183,7 @@ Item {
             hoverImage: "qrc:/Image/ComPortDsconnect_select.png"
             pressedImage: "qrc:/Image/ComPortDisconnect_Preset.png"
             buttonId: "rectButtonDisconnect"
-            onClicked: console.log("Disconnect button clicked")
+  //          onClicked: console.log("Disconnect button clicked")
         }
 
     }//Row

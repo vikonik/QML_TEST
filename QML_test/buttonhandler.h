@@ -6,11 +6,15 @@
 
 class ButtonHandler : public QObject {
     Q_OBJECT
+    void print();
 public:
     explicit ButtonHandler(QObject *parent = nullptr);
 
 signals:
     void buttonClicked(const QString &buttonName);  // Сигнал, который будет отправляться
+    void signalSkanID();
+    void signalConnect();
+    void signalDisconnect();
 
 public slots:
     void onButtonClicked(const QString &buttonId);
