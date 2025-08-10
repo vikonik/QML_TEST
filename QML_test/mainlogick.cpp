@@ -34,6 +34,7 @@ MainLogick::MainLogick(QObject *parent) : QObject(parent),
     // Настраиваем соединения
     setConnect();
 
+tableModel->selectRow(2);
 }
 
 /**/

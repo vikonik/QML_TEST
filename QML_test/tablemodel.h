@@ -12,6 +12,8 @@ class TableModel : public QAbstractTableModel
     Q_OBJECT
 public:
     explicit TableModel(QObject *parent = nullptr);
+    // Добавляем свойство для доступа к выбранной строке из QML
+    Q_PROPERTY(int selectedRow READ selectedRow NOTIFY selectedRowChanged)
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -38,9 +40,16 @@ public:
     Q_INVOKABLE bool isColumnEditable(int column) const {
         return editableColumns.contains(column);
     }
+
+    enum CustomRoles {
+        IsSelectedRole = Qt::UserRole + 1
+
+    };
+
 signals:
     void rowSelected(int row);
-    void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
+//    void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
+    void selectedRowChanged(int row);
 
 private:
     QVector<QStringList> m_data;

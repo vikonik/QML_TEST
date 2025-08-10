@@ -52,7 +52,9 @@ TableModel::TableModel(QObject *parent) : QAbstractTableModel(parent) {
         loadFromFile(dataPath);
 
         if (!m_data.isEmpty()) {
-            selectRow(0);
+
+            selectRow(1);
+
         }
 }
 
@@ -73,35 +75,35 @@ QModelIndex TableModel::index(int row, int column, const QModelIndex &parent) co
 }
 
 QVariant TableModel::data(const QModelIndex &index, int role) const {
- //   if (!index.isValid() || index.row() >= m_rowsLoaded || index.column() >= COLUMN_COUNT)
-    if (!index.isValid() || index.row() >= m_data.size() || index.column() >= COLUMN_COUNT)
+    if (!index.isValid())
         return QVariant();
 
-//    if (role == Qt::DisplayRole || role == Qt::EditRole) {
-//        if (index.row() < m_data.size()) {
-//            return m_data[index.row()][index.column()];
-//        }
-//        return QString("Loading...");
-//    }
-
-    if (role == Qt::DisplayRole || role == Qt::EditRole) {
+    switch (role) {
+    case Qt::DisplayRole:
+    case Qt::EditRole:
+        for (const auto &row : m_data) {
+            qDebug() << row;
+        }
         return m_data[index.row()][index.column()];
-    }
 
-    // Новая роль для проверки, выбрана ли строка
-    if (role == Qt::UserRole + 1) {
+    case IsSelectedRole:
         return index.row() == m_selectedRow;
-    }
 
-    return QVariant();
+    default:
+        return QVariant();
+    }
 }
 
 bool TableModel::setData(const QModelIndex &index, const QVariant &value, int role) {
     if (!index.isValid() || role != Qt::EditRole || index.row() >= m_data.size())
         return false;
 
-//    if (!editableColumns.contains(index.column()))
-//        return false;
+    if (!editableColumns.contains(index.column()))
+        return false;
+
+    if (role == IsSelectedRole) {
+        return index.row() == m_selectedRow;
+    }
 
     m_data[index.row()][index.column()] = value.toString();
     emit dataChanged(index, index, {role});
@@ -124,11 +126,12 @@ Qt::ItemFlags TableModel::flags(const QModelIndex &index) const {
 }
 
 QHash<int, QByteArray> TableModel::roleNames() const {
-    return {
-        {Qt::DisplayRole, "display"},
-        {Qt::EditRole, "edit"},
-        {Qt::UserRole + 1, "isSelected"}  // Новая роль для выделения строки
-    };
+    QHash<int, QByteArray> roles;
+    roles[Qt::DisplayRole]   = "display";
+    roles[Qt::EditRole]      = "edit";
+    roles[IsSelectedRole]    = "isSelected";   // Новая роль для выделения строки
+  //  roles[IsUnSelectedRole]  = "isUnSelected";
+    return roles;
 }
 
 bool TableModel::canFetchMore(const QModelIndex &) const {
@@ -207,6 +210,9 @@ bool TableModel::loadFromFile(const QString& filePath) {
         file.close();
 
         endResetModel();
+        for (const QStringList &row : m_data) {
+            qDebug() << row;
+        }
         return true;
 }
 
@@ -235,19 +241,34 @@ void TableModel::loadBatch(int start, int count) {
 }
 
 void TableModel::selectRow(int row) {
-    if (row < 0 || row >= m_data.size()) return;
+        qDebug() << "Selecting row:" << row;
 
-    int oldRow = m_selectedRow;
-    m_selectedRow = row;
+        if (row < 0 || row >= rowCount())
+            return;
 
-    if (oldRow >= 0) {
-        QModelIndex topLeft = index(oldRow, 0);
-        QModelIndex bottomRight = index(oldRow, COLUMN_COUNT - 1);
-        emit dataChanged(topLeft, bottomRight, {Qt::DisplayRole});
-    }
+        int previous = m_selectedRow;
+        if (previous == row)
+            return; // ничего не меняется, обновлять не надо
 
-    QModelIndex topLeft = index(row, 0);
-    QModelIndex bottomRight = index(row, COLUMN_COUNT - 1);
-    emit dataChanged(topLeft, bottomRight, {Qt::DisplayRole});
-    emit rowSelected(row);
+        m_selectedRow = row;
+
+        QVector<int> roles = { IsSelectedRole };
+
+        // Обновляем предыдущую выбранную строку
+        if (previous >= 0) {
+            emit dataChanged(index(previous, 0), index(previous, columnCount() - 1), roles);
+        }
+
+        // Обновляем новую выбранную строку
+        emit dataChanged(index(row, 0), index(row, columnCount() - 1), roles);
+
+        emit rowSelected(row);
+
+        emit selectedRowChanged(row);
+        qDebug() << "Updated selection from" << previous << "to" << row << "for roles:" << roles;
+
+
 }
+
+
+

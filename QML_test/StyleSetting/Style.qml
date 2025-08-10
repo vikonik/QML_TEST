@@ -29,4 +29,12 @@ QtObject {
     readonly property string fontValueStatusPanel: "Roboto-Medium" // Укажите желаемый шрифт
     readonly property int fontSizeValueStatusPanel: 12
     readonly property color fontColorValueStatusPanel: isDarkTheme ? "#9D9D9D" : "#000000"
+
+    // Добавьте эти свойства в ваш файл стилей
+    readonly property color headerColor: "#3a3a3a"
+    readonly property color selectedRowColor: "#1e3a5f"
+    readonly property color rowEvenColor: "#2a2a2a"
+    readonly property color rowOddColor: "#222222"
+    readonly property color editBorderColor: "#4a76b8"
+    readonly property color textColor: "#ffffff"
 }
