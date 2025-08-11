@@ -15,7 +15,8 @@ TableModel::TableModel(QObject *parent) : QAbstractTableModel(parent) {
     // Путь к файлу данных
         QString dataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
         QDir().mkpath(dataDir);
-        QString dataPath = "D:/0_KNX/QML_test/QML_Test/tabledata.csv";
+       // QString dataPath = "D:/0_KNX/QML_test/QML_Test/tabledata.csv";
+         QString dataPath = "D:/Project/99_QML_Table/QML_TEST/QML_test/tabledata.csv";
         //QString dataPath =  "tabledata.csv";
         // Проверяем существование файла
         if (!QFile::exists(dataPath)) {
@@ -81,9 +82,10 @@ QVariant TableModel::data(const QModelIndex &index, int role) const {
     switch (role) {
     case Qt::DisplayRole:
     case Qt::EditRole:
-        for (const auto &row : m_data) {
-            qDebug() << row;
-        }
+//        for (const auto &row : m_data) {
+//            qDebug() << row;
+//        }
+        qDebug() << "index.row()][index.column():" << m_data[index.row()][index.column()] << index.row() << index.column();
         return m_data[index.row()][index.column()];
 
     case IsSelectedRole:
