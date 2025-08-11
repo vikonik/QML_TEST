@@ -219,152 +219,110 @@ Rectangle {
                 //                    }
                 //                }
 
-                //                delegate: Rectangle {
-                //                    id: rowDelegate
-                //                    width: listView.width
-                //                    height: 30
-                //                    color: model.isSelected ? "lightblue" : (index % 2 ? "#f5f5f5" : "white")
-                //                    border.color: "gray"
-
-                //                    // 1. Проверка доступности модели
-                //                    Component.onCompleted: {
-                //                        console.log("Row created, index:", index,
-                //                                  "Model available?", !!tableModel,
-                //                                  "Column count:", tableModel ? tableModel.columnCount() : "null")
-                //                    }
-
-                //                    Row {
-                //                        anchors.fill: parent
-                //                        spacing: 1
-
-                //                        // Колонка 0: Галочка выбора
-                //                        Rectangle {
-                //                            width: 40
-                //                            height: parent.height
-                //                            color: "transparent"
-
-                //                            Text {
-                //                                text: "✓"
-                //                                visible: model.isSelected
-                //                                anchors.centerIn: parent
-                //                            }
-                //                        }
-
-                //                        // Колонки 1-14: Данные
-                ////                        Repeater {
-                ////                            model: 14
-
-                ////                            Rectangle {
-                ////                                width: (parent.width - 40) / 14
-                ////                                height: parent.height
-                ////                                color: "transparent"
-                ////                                border.color: "#eee"
-
-                ////                                // 2. Проверка данных для каждой ячейки
-                //////                                Component.onCompleted: {
-                //////                                    var value = tableModel.data(
-                //////                                        tableModel.index(rowDelegate.index, index + 1),
-                //////                                        Qt.DisplayRole
-                //////                                    );
-                //////                                    console.log("Cell", rowDelegate.index, index + 1, ":", value);
-                //////                                }
-
-                //////                                Text {
-                //////                                    anchors.fill: parent
-                //////                                    anchors.margins: 3
-                //////                                    text: tableModel.data(tableModel.index(rowDelegate.index, index), Qt.DisplayRole) || ""
-                ////////                                    text: {
-                ////////                                        // 3. Прямое получение данных
-                ////////                                        var val = tableModel.data(
-                ////////                                            tableModel.index(rowDelegate.index, index + 1),
-                ////////                                            Qt.DisplayRole
-                ////////                                        );
-                ////////                                        return val ? val : "";
-                ////////                                    }
-                //////                                    elide: Text.ElideRight
-                //////                                }
-
-
-
-                ////                            }
-
-
-                ////                        }
-
-                //                        Repeater {
-                //                            model: 15  // Количество колонок
-
-                //                            Rectangle {
-                //                                width: (parent.width / 15)  // Равномерное распределение
-                //                                height: parent.height
-                //                                color: "transparent"
-                //                                border.color: "#DDDDDD"
-                //                                border.width: 1
-
-                //                                // Текст в ячейке
-                //                                Text {
-                //                                    anchors.fill: parent
-                //                                    anchors.margins: 2
-                //                                    text: tableModel.data(tableModel.index(rowDelegate.index, index), Qt.DisplayRole) || ""
-                //                                    elide: Text.ElideRight
-                //                                    verticalAlignment: Text.AlignVCenter
-                //                                }
-                //                            }
-                //                        }
-
-                //                    }
-
-                //                    MouseArea {
-                //                        anchors.fill: parent
-                //                        onClicked: tableModel.selectRow(index)
-                //                    }
-                //                }
-
-//Рабочий делегат
                 delegate: Rectangle {
                     id: rowDelegate
-                    width: ListView.view.width
+                    width: TableView.view.width
                     height: 30
-                    color: model.isSelected ? "#3399FF" : (index % 2 === 0 ? "#F0F0F0" : "#FFFFFF")
-                    border.color: "#CCCCCC"
+                    color: model.isSelected ? Style.selectedRowColor : (index % 2 === 0 ? Style.rowEvenColor : Style.rowOddColor)
+                    border.color: Style.borderColor
                     border.width: 1
 
-                    // Основная строка таблицы
+                    // Сохраняем данные строки
+                    property var rowData: model.display
+                    property int rowIndex: index
+
                     Row {
                         anchors.fill: parent
                         spacing: 0
 
-                        // Ячейки данных (15 колонок)
+                        // Колонки данных
                         Repeater {
-                            model: 15  // Количество колонок
-
+                            model: 15
                             Rectangle {
-                                width: (parent.width / 15)  // Равномерное распределение
+                                width: parent.width / 15
                                 height: parent.height
                                 color: "transparent"
                                 border.color: "#DDDDDD"
                                 border.width: 1
 
-                                // Текст в ячейке
+                                // Для отображения данных
                                 Text {
                                     anchors.fill: parent
                                     anchors.margins: 2
-                                    text: tableModel.data(tableModel.index(rowDelegate.index, index), Qt.DisplayRole) || ""
+                                    text: rowData ? rowData[index] : ""
                                     elide: Text.ElideRight
                                     verticalAlignment: Text.AlignVCenter
+ color: "red"
+                                    Component.onCompleted: {
+                                        console.log("Row:", rowIndex, "Col:", index, "Value:", text)
+                                    }
                                 }
                             }
                         }
                     }
 
-                    // Обработчик клика
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: {
-                            tableModel.selectRow(rowDelegate.index)
-                        }
+                        onClicked: tableModel.selectRow(rowIndex)
                     }
                 }
+
+//Рабочий делегат
+//                delegate: Rectangle {
+//                    id: rowDelegate
+//                    width: ListView.view.width
+//                    height: 30
+//                    color: model.isSelected ? "#3399FF" : (index % 2 === 0 ? "#F0F0F0" : "#FFFFFF")
+//                    border.color: "#CCCCCC"
+//                    border.width: 1
+
+//                    // Основная строка таблицы
+//                    Row {
+
+//                        anchors.fill: parent
+//                        spacing: 0
+
+//                        // Ячейки данных (15 колонок)
+//                        Repeater {
+//                            id: repeater
+//                            model: 15  // Количество колонок
+
+//                            Rectangle {
+//                                property int columnIndex: index
+//                                width: (parent.width / 15)  // Равномерное распределение
+//                                height: parent.height
+//                                color: "transparent"
+//                                border.color: "#DDDDDD"
+//                                border.width: 1
+
+//                                // Текст в ячейке
+//                                Text {
+//                                    anchors.fill: parent
+//                                    anchors.margins: 2
+////                                    //text: tableModel.data(tableModel.index(rowDelegate.index, columnIndex), Qt.DisplayRole) || "" // rowDelegate.index
+////                                    text: tableModel.data(tableModel.index(rowDelegate.index, index), Qt.DisplayRole) || ""
+////                                    //text: model["col" + columnIndex] !== undefined ? model["col" + columnIndex] : ""
+////console.log("rowDelegate.index =", rowDelegate.index);
+//                                    text:{
+//                                        tableModel.data(tableModel.index(rowDelegate.index, columnIndex), Qt.DisplayRole) || ""
+//                                        console.log("rowDelegate.index =", rowDelegate.index);
+//                                        console.log("columnIndex =", columnIndex);
+//                                    }
+//                                    elide: Text.ElideRight
+//                                    verticalAlignment: Text.AlignVCenter
+//                                }
+//                            }
+//                        }
+//                    }
+
+//                    // Обработчик клика
+////                    MouseArea {
+////                        anchors.fill: parent
+////                        onClicked: {
+////                            tableModel.selectRow(rowDelegate.index)
+////                        }
+////                    }
+//                }
 
 ///************************************************
 //                delegate: Rectangle {
