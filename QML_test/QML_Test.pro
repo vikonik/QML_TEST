@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         buttonhandler.cpp \
         comboboxmodel.cpp \
+        dataparser.cpp \
         debug.cpp \
         main.cpp \
         mainlogick.cpp \
@@ -41,6 +42,7 @@ DISTFILES +=
 HEADERS += \
     buttonhandler.h \
     comboboxmodel.h \
+    dataparser.h \
     debug.h \
     fifo.h \
     mainlogick.h \

@@ -9,7 +9,7 @@
 #include "comboboxmodel.h"
 #include "buttonhandler.h"
 #include "tablemodel.h"
-
+#include "dataparser.h"
 
 
 class MainLogick: public QObject {
@@ -54,7 +54,7 @@ private:
     QString currentPort; // Текущий выбранный порт
     ButtonHandler *buttonHandler;  // ButtonHandler как член класса
 TableModel *tableModel;
-
+DataParser *parser;
 
     void setConnect();
     void setupSerial(); // Настройка последовательного порта

@@ -18,7 +18,7 @@ MainLogick::MainLogick(QObject *parent) : QObject(parent),
     serial = new Serial();
     buttonHandler = new ButtonHandler();// Инициализируем ButtonHandler
     tableModel = new TableModel();
-
+    parser = new DataParser(this);
     deviceType.clear();
 
     // Показываем окно отладки
@@ -54,7 +54,8 @@ void MainLogick::setConnect(){
     connect(buttonHandler, &ButtonHandler::signalConnect, this, &MainLogick::openPort);
     connect(buttonHandler, &ButtonHandler::signalDisconnect, serial, &Serial::closePort);
     connect(buttonHandler, &ButtonHandler::signalSkanID,this, &MainLogick::scanNet);
-    connect(this, SIGNAL(signalSendData(QByteArray*)), serial, SLOT(sendData(QByteArray*)));
+ //   connect(this, SIGNAL(signalSendData(QByteArray*)), serial, SLOT(sendData(QByteArray*)));
+    connect(serial, &Serial::rawDataReceived, parser, &DataParser::processRawData);
 ////connect(this, &MainLogick::signalSendData, serial, &Serial::sendData);
 ////connect(this, &MainLogick::signalSendData, serial, &Serial::sendData);
 //    // Добавляем соединение для обработки полученных данных
