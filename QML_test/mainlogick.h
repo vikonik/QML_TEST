@@ -10,6 +10,8 @@
 #include "buttonhandler.h"
 #include "tablemodel.h"
 
+
+
 class MainLogick: public QObject {
     Q_OBJECT
 

@@ -29,6 +29,7 @@ Rectangle {
                 width: 320
                 height: parent.height
 //                color: Style.backgroundColor
+                color: trnsparent
                 border.color: Style.borderColor
                 border.width: 1
 

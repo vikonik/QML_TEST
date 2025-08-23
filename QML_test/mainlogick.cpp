@@ -53,6 +53,7 @@ MainLogick::~MainLogick()
 void MainLogick::setConnect(){
     connect(buttonHandler, &ButtonHandler::signalConnect, this, &MainLogick::openPort);
     connect(buttonHandler, &ButtonHandler::signalDisconnect, serial, &Serial::closePort);
+    connect(buttonHandler, &ButtonHandler::signalSkanID,this, &MainLogick::scanNet);
     connect(this, SIGNAL(signalSendData(QByteArray*)), serial, SLOT(sendData(QByteArray*)));
 ////connect(this, &MainLogick::signalSendData, serial, &Serial::sendData);
 ////connect(this, &MainLogick::signalSendData, serial, &Serial::sendData);
@@ -94,6 +95,7 @@ void MainLogick::scanNet()
 {
     debugWindow->log("Starting network scan...");
     QByteArray command = ">Scan?<";
+
     emit signalSendData(&command);
 }
 
@@ -157,8 +159,6 @@ void MainLogick::detectDeviceType(QByteArray *data){
                 fifo.pop();
 
             }
-
-
 
         }
         else if(!QString::compare(deviceType, IRMAX)){
