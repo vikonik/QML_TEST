@@ -1,47 +1,51 @@
-#ifndef TABLEMODEL_H
-#define TABLEMODEL_H
-
 #include <QAbstractListModel>
-#include <QVector>
-#include <QStringList>
-#include <QSet>
+#include <QList>
+#include <QVariant>
+#include <QFile>
+#include <QTextStream>
+#include <QDebug>
+#include "dataStruct.h"
 
-class TableModel : public QAbstractListModel
-{
+class TableModel : public QAbstractListModel {
     Q_OBJECT
+    Q_PROPERTY(QVariantList editableColumns READ editableColumns WRITE setEditableColumns NOTIFY editableColumnsChanged)
+
 public:
     explicit TableModel(QObject *parent = nullptr);
 
-    // QAbstractListModel overrides
+    // Роли для доступа к данным
+    enum Roles {
+        RowDataRole = Qt::UserRole + 1
+    };
+
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     QHash<int, QByteArray> roleNames() const override;
 
-    // Свойства и методы
-    Q_PROPERTY(int selectedRow READ selectedRow NOTIFY selectedRowChanged)
-    Q_INVOKABLE void selectRow(int row);
-    Q_INVOKABLE bool isColumnEditable(int column) const;
-    int selectedRow() const { return m_selectedRow; }
+    Q_INVOKABLE void loadCSV(const QString &filePath);
+    Q_INVOKABLE void addRow(const QList<QVariant> &row);
+    Q_INVOKABLE void clear();
 
-    // Работа с файлом
-    Q_INVOKABLE bool loadFromFile(const QString& filePath);
+    // Для редактируемых столбцов
+    QVariantList editableColumns() const;
+    void setEditableColumns(const QVariantList &columns);
 
-    enum Roles {
-        DisplayRole = Qt::UserRole + 1,
-        IsSelectedRole
-    };
+    Q_INVOKABLE bool isCellEditable(int row, int column) const;
+    Q_INVOKABLE void updateCell(int row, int column, const QVariant &value);
+    // Добавляем метод сохранения
+    Q_INVOKABLE bool saveCSV(const QString &filePath);
+    // Переименованный метод, чтобы избежать конфликта
+    void setModelData(const QList<QList<QVariant>> &newData);
 
+    Q_INVOKABLE QString getRowIcon(int row, bool isSelected) const;
+public slots:
+
+    void loadDeviceData(const QVector<OneChanel_t> &data);
 signals:
-    void selectedRowChanged(int row);
+    void editableColumnsChanged();
 
 private:
-    QVector<QStringList> m_data;
-    int m_selectedRow = -1;
-    QString m_filePath;
-
-    static const int COLUMN_COUNT = 15;
-    QSet<int> editableColumns{2, 4, 6, 8, 10};
+    QList<QList<QVariant>> m_data;
+    QList<int> m_editableColumns; // Индексы редактируемых столбцов
 };
-
-#endif // TABLEMODEL_H

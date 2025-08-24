@@ -1,123 +1,216 @@
 #include "tablemodel.h"
+#include <QFile>
 #include <QTextStream>
 #include <QDebug>
-#include <QStandardPaths>
-#include <QDir>
-#include <QFile>
+#include "dataStruct.h"
 
-TableModel::TableModel(QObject *parent) : QAbstractListModel(parent)
-{
-    QString dataPath = "D:/0_KNX/QML_test/QML_Test/tabledata.csv";
+TableModel::TableModel(QObject *parent) : QAbstractListModel(parent) {}
 
-    if (!QFile::exists(dataPath)) {
-        // Создание файла с тестовыми данными
-        QFile file(dataPath);
-        if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            QTextStream out(&file);
-            QStringList headers;
-            for (int i = 1; i <= 15; i++) {
-                headers << QString("Column %1").arg(i);
-            }
-            out << headers.join(';') << "\n";
-
-            for (int row = 0; row < 10; ++row) {
-                QStringList rowData;
-                for (int col = 1; col <= 15; ++col) {
-                    rowData << QString("R%1_C%2").arg(row + 1).arg(col);
-                }
-                out << rowData.join(';') << "\n";
-            }
-            file.close();
-        }
-    }
-
-    loadFromFile(dataPath);
-    if (!m_data.isEmpty()) {
-        selectRow(1);
-    }
+int TableModel::rowCount(const QModelIndex &parent) const {
+    return parent.isValid() ? 0 : m_data.size();
 }
 
-int TableModel::rowCount(const QModelIndex &) const
-{
-    return m_data.size();
-}
-
-QVariant TableModel::data(const QModelIndex &index, int role) const
-{
+QVariant TableModel::data(const QModelIndex &index, int role) const {
     if (!index.isValid() || index.row() >= m_data.size())
         return QVariant();
 
-    switch (role) {
-    case DisplayRole:
-        return m_data[index.row()];
-    case IsSelectedRole:
-        return index.row() == m_selectedRow;
-    default:
-        return QVariant();
-    }
+    if (role == RowDataRole)
+        return QVariant::fromValue(m_data[index.row()]);
+
+    return QVariant();
 }
 
-bool TableModel::setData(const QModelIndex &index, const QVariant &value, int role)
-{
-    if (!index.isValid() || role != DisplayRole || index.row() >= m_data.size())
+bool TableModel::setData(const QModelIndex &index, const QVariant &value, int role) {
+    if (!index.isValid() || role != RowDataRole)
         return false;
 
-    m_data[index.row()] = value.toStringList();
-    emit dataChanged(index, index, {role});
-    return true;
+    if (index.row() < 0 || index.row() >= m_data.size())
+        return false;
+
+    // Для упрощения будем считать, что value - это вся строка
+    if (value.canConvert<QList<QVariant>>()) {
+        m_data[index.row()] = value.value<QList<QVariant>>();
+        emit dataChanged(index, index, {role});
+        return true;
+    }
+
+    return false;
 }
 
-QHash<int, QByteArray> TableModel::roleNames() const
-{
+QHash<int, QByteArray> TableModel::roleNames() const {
     QHash<int, QByteArray> roles;
-    roles[DisplayRole] = "display";
-    roles[IsSelectedRole] = "isSelected";
+    roles[RowDataRole] = "rowData";
     return roles;
 }
 
-bool TableModel::isColumnEditable(int column) const
-{
-    return editableColumns.contains(column);
+void TableModel::addRow(const QList<QVariant> &row) {
+    beginInsertRows(QModelIndex(), m_data.size(), m_data.size());
+    m_data.append(row);
+    endInsertRows();
 }
 
-bool TableModel::loadFromFile(const QString& filePath)
-{
-    QFile file(filePath);
-    if (!file.open(QIODevice::ReadOnly)) {
-        qWarning() << "Failed to open file:" << filePath;
-        return false;
-    }
+void TableModel::setModelData(const QList<QList<QVariant>> &newData) {
+    beginResetModel();
+    m_data = newData;
+    endResetModel();
+}
 
+void TableModel::loadCSV(const QString &filePath) {
     beginResetModel();
     m_data.clear();
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning() << "Cannot open file:" << filePath;
+        endResetModel();
+        return;
+    }
 
     QTextStream in(&file);
     while (!in.atEnd()) {
         QString line = in.readLine();
-        QStringList fields = line.split(';');
-        while (fields.size() < COLUMN_COUNT) fields << "";
-        m_data.append(fields);
-    }
-    file.close();
+        if (line.trimmed().isEmpty()) continue;
 
+        QList<QVariant> row;
+        QStringList fields = line.split(',');
+
+        for (QString field : fields) {
+            // Удаление кавычек если есть
+            if (field.startsWith('"') && field.endsWith('"')) {
+                field = field.mid(1, field.length() - 2);
+            }
+            row.append(field);
+        }
+
+        m_data.append(row);
+    }
+
+    file.close();
     endResetModel();
+    qDebug() << "Loaded" << m_data.size() << "rows from" << filePath;
+}
+
+/*
+Получаем данные из DataParser
+*/
+void TableModel::loadDeviceData(const QVector<OneChanel_t>& data){
+
+    qDebug()<<"I am here";
+//    beginResetModel();
+//    // Очищаем существующие данные
+//        m_data.clear();
+//        // Заполняем модель данными из вектора
+//        for (const OneChanel_t &device : data) {
+//            QList<QVariant> row;
+//            row.append(device.address);    // Добавляем адрес
+//            row.append(device.versionFW);  // Добавляем версию firmware
+
+//            // Добавляем строку в модель
+//            m_data.append(row);
+//        }
+//        endResetModel();
+}
+
+/**/
+void TableModel::clear() {
+    beginResetModel();
+    m_data.clear();
+    endResetModel();
+}
+
+// Установка редактируемых столбцов
+QVariantList TableModel::editableColumns() const {
+    QVariantList list;
+    for (int col : m_editableColumns) {
+        list.append(col);
+    }
+    return list;
+}
+
+void TableModel::setEditableColumns(const QVariantList &columns) {
+    m_editableColumns.clear();
+    for (const QVariant &col : columns) {
+        if (col.isValid() && col.canConvert<int>()) {
+            m_editableColumns.append(col.toInt());
+        }
+    }
+    emit editableColumnsChanged();
+}
+
+// Проверка возможности редактирования ячейки
+bool TableModel::isCellEditable(int row, int column) const {
+    // Первая строка (заголовки) не редактируется
+    if (row == 0) return false;
+
+    return (m_editableColumns.contains(column) || column == 5) &&
+           row >= 0 && row < m_data.size() &&
+           column >= 0 && column < m_data[row].size();
+}
+
+// Обновление значения ячейки
+void TableModel::updateCell(int row, int column, const QVariant &value) {
+    qDebug() << "Updating cell - Row:" << row << "Column:" << column << "Value:" << value;
+
+    if (row < 0 || row >= m_data.size() ||
+        column < 0 || column >= m_data[row].size()) {
+        qWarning() << "Invalid cell:" << row << column;
+        return;
+    }
+
+    if (!isCellEditable(row, column)) {
+        qWarning() << "Cell not editable:" << row << column;
+        return;
+    }
+
+    // Обновляем значение
+
+    // Для 6-й колонки преобразуем значение в "1" или "0"
+    if (column == 5) {
+        m_data[row][column] = value.toBool() ? "1" : "0";
+    } else {
+        m_data[row][column] = value;
+    }
+
+    // Уведомляем об изменении конкретной строки
+    QModelIndex modelIndex = createIndex(row, 0);
+    emit dataChanged(modelIndex, modelIndex, {RowDataRole});
+}
+
+bool TableModel::saveCSV(const QString &filePath) {
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << "Cannot open file for writing:" << filePath;
+        return false;
+    }
+
+    QTextStream out(&file);
+
+    for (const QList<QVariant> &row : m_data) {
+        QStringList fields;
+        for (const QVariant &field : row) {
+            QString text = field.toString();
+
+            // Экранируем поля, содержащие запятые или кавычки
+            if (text.contains(',') || text.contains('"') || text.contains('\n')) {
+                text.replace('"', "\"\""); // Двойные кавычки
+                fields.append('"' + text + '"');
+            } else {
+                fields.append(text);
+            }
+        }
+        out << fields.join(',') << '\n';
+    }
+
+    file.close();
+    qDebug() << "Saved" << m_data.size() << "rows to" << filePath;
     return true;
 }
 
-void TableModel::selectRow(int row)
-{
-    if (row < 0 || row >= rowCount()) return;
+// TableModel.cpp
+QString TableModel::getRowIcon(int row, bool isSelected) const {
+    if (isSelected) return "qrc:/icons/row_selected.png";
 
-    int previous = m_selectedRow;
-    if (previous == row) return;
-
-    m_selectedRow = row;
-    QVector<int> roles = { IsSelectedRole };
-
-    if (previous >= 0) {
-        emit dataChanged(index(previous, 0), index(previous, 0), roles);
-    }
-
-    emit dataChanged(index(row, 0), index(row, 0), roles);
-    emit selectedRowChanged(row);
+    // Дополнительная логика для разных типов строк
+    if (row == 0) return "qrc:/icons/header_icon.png";
+    return "qrc:/icons/row_default.png";
 }

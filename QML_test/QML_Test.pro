@@ -42,6 +42,7 @@ DISTFILES +=
 HEADERS += \
     buttonhandler.h \
     comboboxmodel.h \
+    dataStruct.h \
     dataparser.h \
     debug.h \
     fifo.h \

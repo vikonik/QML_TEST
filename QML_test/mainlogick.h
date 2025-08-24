@@ -39,6 +39,7 @@ public slots:
     //    void onPortSelected(int index); // Обработчик выбора порта
     void openPort();//Фасад для функции окрытияи порта
 
+    void getDeviceInfo();
 private:
 
     #define CH_1    "A"
@@ -54,7 +55,7 @@ private:
     QString currentPort; // Текущий выбранный порт
     ButtonHandler *buttonHandler;  // ButtonHandler как член класса
 TableModel *tableModel;
-DataParser *parser;
+DataParser *dataParser;
 
     void setConnect();
     void setupSerial(); // Настройка последовательного порта

@@ -92,5 +92,6 @@
         <file>Image/pictoConnectedPort.png</file>
         <file>Image/pictoTeme.png</file>
         <file>CustomTable.qml</file>
+        <file>DeviceTable.qml</file>
     </qresource>
 </RCC>

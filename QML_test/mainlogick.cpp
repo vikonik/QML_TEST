@@ -18,7 +18,8 @@ MainLogick::MainLogick(QObject *parent) : QObject(parent),
     serial = new Serial();
     buttonHandler = new ButtonHandler();// Инициализируем ButtonHandler
     tableModel = new TableModel();
-    parser = new DataParser(this);
+    dataParser = new DataParser(this);
+
     deviceType.clear();
 
     // Показываем окно отладки
@@ -34,7 +35,7 @@ MainLogick::MainLogick(QObject *parent) : QObject(parent),
     // Настраиваем соединения
     setConnect();
 
-tableModel->selectRow(2);
+
 }
 
 /**/
@@ -55,9 +56,11 @@ void MainLogick::setConnect(){
     connect(buttonHandler, &ButtonHandler::signalDisconnect, serial, &Serial::closePort);
     connect(buttonHandler, &ButtonHandler::signalSkanID,this, &MainLogick::scanNet);
  //   connect(this, SIGNAL(signalSendData(QByteArray*)), serial, SLOT(sendData(QByteArray*)));
-    connect(serial, &Serial::rawDataReceived, parser, &DataParser::processRawData);
-////connect(this, &MainLogick::signalSendData, serial, &Serial::sendData);
-////connect(this, &MainLogick::signalSendData, serial, &Serial::sendData);
+    connect(serial, &Serial::rawDataReceived, dataParser, &DataParser::processRawData);
+  //  connect(dataParser, &DataParser::devicesUpdated, tableModel, &TableModel::loadDeviceData);
+    connect(dataParser, &DataParser::devicesUpdated, this, [this](){
+        tableModel->loadDeviceData(dataParser->getOneChanelDevices());
+    });
 //    // Добавляем соединение для обработки полученных данных
 //    connect(serial, &Serial::dataReceived, this, &MainLogick::detectDeviceType);
 }
@@ -171,4 +174,7 @@ void MainLogick::detectDeviceType(QByteArray *data){
     }
 }
 
+/**/
+void MainLogick::getDeviceInfo(){
 
+}

@@ -128,8 +128,8 @@ DataParser::DeviceType DataParser::identifyDevice(const QString &data) {
 
 void DataParser::processRawData(const QByteArray &data) {
     m_buffer.append(data);
-    qDebug() << "Добавлено данных в буфер:" << data.size() << "байт";
-    qDebug() << "Текущий размер буфера:" << m_buffer.size() << "байт";
+    //qDebug() << "Добавлено данных в буфер:" << data.size() << "байт";
+    //qDebug() << "Текущий размер буфера:" << m_buffer.size() << "байт";
     processBuffer();
 }
 
@@ -252,9 +252,9 @@ void DataParser::updateDeviceArrays() {
     // Отправляем сигнал об обновлении
     emit devicesUpdated();
 
-    qDebug() << "Массивы устройств обновлены и отсортированы";
-    qDebug() << "Одноканальных устройств:" << m_oneChanelDevices.size();
-    qDebug() << "Шестиканальных устройств:" << m_sixChanelDevices.size();
+//    qDebug() << "Массивы устройств обновлены и отсортированы";
+//    qDebug() << "Одноканальных устройств:" << m_oneChanelDevices.size();
+//    qDebug() << "Шестиканальных устройств:" << m_sixChanelDevices.size();
 }
 
 QVector<OneChanel_t> DataParser::getOneChanelDevices() const {

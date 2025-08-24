@@ -120,8 +120,8 @@ bool Serial::sendData(const QByteArray &data)
 void Serial::readData()
 {
     QByteArray data = serial.readAll();
-    qDebug() << "Получено данных:" << data.size() << "байт";
-    qDebug() << "Данные (HEX):" << data.toHex(' ');
+//    qDebug() << "Получено данных:" << data.size() << "байт";
+//    qDebug() << "Данные (HEX):" << data.toHex(' ');
 
     // Отправляем сырые данные для обработки
     emit rawDataReceived(data);
