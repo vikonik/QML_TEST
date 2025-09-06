@@ -402,9 +402,12 @@ anchors.leftMargin: 10
                 color: Style.backgroundColor
                 border.width: 1
                 border.color: Style.borderColor
-                   CustomTable{
+//                   CustomTable{
 
-                   }
+//                   }
+                CustomTable_1CH{
+
+                }
 
             }
 

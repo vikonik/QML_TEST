@@ -95,5 +95,7 @@
         <file>DeviceTable.qml</file>
         <file>Image/iconSerialID.png</file>
         <file>DeviceTableData.qml</file>
+        <file>MainTable_1ch.qml</file>
+        <file>CustomTable_1CH.qml</file>
     </qresource>
 </RCC>

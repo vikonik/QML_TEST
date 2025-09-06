@@ -239,9 +239,9 @@ Rectangle {
         anchors.bottom: parent.bottom
       //  color: "transparent"
          color: parent.color
-//        DeviceTable{
+        DeviceTable{
 
-//        }
+        }
 
     }//Тело таблицы
 }
