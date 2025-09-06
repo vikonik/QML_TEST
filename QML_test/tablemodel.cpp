@@ -96,19 +96,23 @@ void TableModel::loadCSV(const QString &filePath) {
 void TableModel::loadDeviceData(const QVector<OneChanel_t>& data){
 
     qDebug()<<"I am here";
-//    beginResetModel();
-//    // Очищаем существующие данные
-//        m_data.clear();
-//        // Заполняем модель данными из вектора
-//        for (const OneChanel_t &device : data) {
-//            QList<QVariant> row;
-//            row.append(device.address);    // Добавляем адрес
-//            row.append(device.versionFW);  // Добавляем версию firmware
+    beginResetModel();
+    // Очищаем существующие данные
+        m_data.clear();
+        // Заполняем модель данными из вектора
+        for (const OneChanel_t &device : data) {
+            QList<QVariant> row;
+            row.append(device.address);    // Добавляем адрес
+            row.append("1-CH");
+            row.append(device.versionFW);  // Добавляем версию firmware
+            row.append("1-CH");
 
-//            // Добавляем строку в модель
-//            m_data.append(row);
-//        }
-//        endResetModel();
+            // Добавляем строку в модель
+            m_data.append(row);
+            qDebug() << "++";
+        }
+        endResetModel();
+        qDebug() << "Loaded" << m_data.size() << "rows from dataParser" ;
 }
 
 /**/

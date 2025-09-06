@@ -93,5 +93,7 @@
         <file>Image/pictoTeme.png</file>
         <file>CustomTable.qml</file>
         <file>DeviceTable.qml</file>
+        <file>Image/iconSerialID.png</file>
+        <file>DeviceTableData.qml</file>
     </qresource>
 </RCC>

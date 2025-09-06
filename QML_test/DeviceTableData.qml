@@ -6,9 +6,9 @@ import StyleSetting 1.0
 Rectangle {
     id: content
     anchors.fill: parent
-color: "transparent"
+
     // Массив ширины колонок (пример значений)
-    property var columnWidths: [75, 75, 50, 80]
+    property var columnWidths: [95, 75, 30, 90]
 
     ListView {
         id: rowView
@@ -26,9 +26,8 @@ color: "transparent"
             property int rowIndex: index
             property bool isSelected: rowView.selectedRow === rowIndex
 
-         //   color: isSelected ? "#c0d8f0" : (rowIndex % 2 === 0 ? "#f0f0f0" : "#ffffff")
-            color: isSelected ? "#2F2F2F" : "transparent"
-//color: isSelected ? "red" : "green"
+            color: isSelected ? "#c0d8f0" : (rowIndex % 2 === 0 ? "#f0f0f0" : "#ffffff")
+
             // Иконка в начале строки
             Rectangle {
                 width: 30
@@ -68,9 +67,7 @@ color: "transparent"
                                content.columnWidths[model.index] : 75
                         height: parent.height
                         color: "transparent"
-//color: "blue"
-//border.color: "blue"
-//border.width: 1
+
                         property int columnIndex: model.index
                         property int actualRowIndex: rowDelegate.rowIndex
 
@@ -96,8 +93,7 @@ color: "transparent"
                             elide: Text.ElideMiddle
                             color: Style.buttonDefaultTextrColor
                             font.pixelSize: Style.fontSizeLabel
-                           // visible: (columnIndex !== 4 && columnIndex !== 5)
-                            horizontalAlignment: columnIndex === 0 ? Text.AlignLeft : Text.AlignHCenter
+                            visible: (columnIndex !== 4 && columnIndex !== 5)
                         }
                     }
                 }
@@ -108,7 +104,7 @@ color: "transparent"
                 anchors.bottom: parent.bottom
                 width: parent.width
                 height: 1
-                color: "#2B2B2B"
+                color: "#e0e0e0"
             }
         }
     }

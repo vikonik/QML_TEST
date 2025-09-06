@@ -8,7 +8,7 @@ Rectangle {
     width: parent.width
     height: parent.height
     color: Style.backgroundColor
-    //   color: "blue"
+     //  color: "blue"
 
     //Таблица типов
     Rectangle {
@@ -100,6 +100,9 @@ Rectangle {
             anchors.bottom: parent.bottom
             color: "transparent"
             // color: "red"
+            DeviceTable{
+
+            }
 
         }//Тело таблицы
     }
@@ -226,6 +229,21 @@ Rectangle {
 
 
     }//заголовок
+
+    //Тело таблицы
+    Rectangle {
+        id: tableConttrollerDataData
+        width: parent.width
+        anchors.left: parent.left
+        anchors.top: tableParametorsHeader.bottom
+        anchors.bottom: parent.bottom
+      //  color: "transparent"
+         color: parent.color
+//        DeviceTable{
+
+//        }
+
+    }//Тело таблицы
 }
 
 }
