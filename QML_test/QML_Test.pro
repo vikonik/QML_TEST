@@ -22,6 +22,7 @@ SOURCES += \
         mainlogick.cpp \
         rfmax.cpp \
         serial.cpp \
+        tablecontroller.cpp \
         tablemodel.cpp
 
 RESOURCES += qml.qrc
@@ -49,6 +50,7 @@ HEADERS += \
     mainlogick.h \
     rfmax.h \
     serial.h \
+    tablecontroller.h \
     tablemodel.h
 
 FORMS += \

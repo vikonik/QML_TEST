@@ -13,6 +13,8 @@ Rectangle {
     // Массив ширины колонок (пример значений)
     //   property var columnWidths: [75, 75, 50, 80]
 
+    signal rowSelected(int rowIndex)// Сигнал для передачи индекса выбранной строки
+
     property var columnWidths: [
         { name: "Serial ID", width: 75 },
         { name: "Name", width: 75 },
@@ -78,7 +80,10 @@ Rectangle {
 
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: rowView.selectedRow = rowIndex
+                    onClicked: {
+                         rowView.selectedRow = rowIndex;
+                         content.rowSelected(rowIndex); // Испускаем сигнал
+                     }
                 }
             }
 
@@ -127,6 +132,7 @@ Rectangle {
                             acceptedButtons: Qt.LeftButton
                             onClicked: {
                                 rowView.selectedRow = rowIndex
+                                content.rowSelected(rowIndex); // Испускаем сигнал
                             }
                         }
 

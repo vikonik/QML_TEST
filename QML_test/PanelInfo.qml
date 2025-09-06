@@ -6,6 +6,10 @@ Item {
     id: panelInfo
     width: 223
     height: 134
+    property string serialText: ""
+    property string minAngleText: ""
+    property string typeText: ""
+    property string activationDateText: ""
   //  color: "transparent"
 Rectangle{
     id: rowText_1
@@ -56,7 +60,7 @@ Rectangle{
 
             Text{
                 id: serial
-                text:"90"
+                text:serialText
                 color: Style.fontColorValue
                 font.family: Style.fontValue
                 font.pixelSize: Style.fontSizeValue
@@ -87,7 +91,7 @@ Rectangle{
 
                 Text{
                     id: minAngle
-                    text:"2089"
+                    text:minAngleText
                     color: Style.fontColorValue
                     font.family: Style.fontValue
                     font.pixelSize: Style.fontSizeValue
@@ -141,7 +145,7 @@ Rectangle{
 
                     Text{
                         id: type
-                        text:"1-Ch"
+                        text:typeText
                         color: Style.fontColorValue
                         font.family: Style.fontValue
                         font.pixelSize: Style.fontSizeValue
@@ -172,7 +176,7 @@ Rectangle{
 
                         Text{
                             id: calendar
-                            text:"08.12.04"
+                            text:activationDateText
                             color: Style.fontColorValue
                             font.family: Style.fontValue
                             font.pixelSize: Style.fontSizeValue

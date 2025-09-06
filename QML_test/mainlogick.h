@@ -10,7 +10,7 @@
 #include "buttonhandler.h"
 #include "tablemodel.h"
 #include "dataparser.h"
-
+#include "tablecontroller.h"
 
 class MainLogick: public QObject {
     Q_OBJECT
@@ -27,6 +27,7 @@ public:
     Q_INVOKABLE void refreshComPorts(); // Обновление списка портов
     ComboBoxModel* getComboBoxModel() { return &comboBoxModel; } // Геттер для модели
     TableModel* getTableModel() { return tableModel; } // Геттер для модели
+    TableController* getTableController(){return tableController;}
 
 signals:
     void signalSendData(QByteArray *data);
@@ -56,7 +57,7 @@ private:
     ButtonHandler *buttonHandler;  // ButtonHandler как член класса
 TableModel *tableModel;
 DataParser *dataParser;
-
+TableController *tableController;
     void setConnect();
     void setupSerial(); // Настройка последовательного порта
 

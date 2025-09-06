@@ -32,6 +32,7 @@ Rectangle {
 
     ]
 
+    signal rowSelected(int rowIndex)// Сигнал для передачи данных строки
 
     readonly property int columnSerialId: 0
     readonly property int columnName: 1
@@ -176,7 +177,11 @@ Rectangle {
 
             //            }
             MainTable_1ch{
-
+                // Обрабатываем сигнал из внутренней таблицы
+                onRowSelected: {
+                    // Пробрасываем сигнал наружу
+                    customTable.rowSelected(rowIndex)
+                }
             }
 
         }//Тело таблицы

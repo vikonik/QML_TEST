@@ -1,6 +1,6 @@
 import QtQuick 2.0
-import QtQuick.Window 2.0
-import QtQuick.Controls 2.0
+import QtQuick.Window 2.12
+import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.0
 import StyleSetting 1.0
 
@@ -320,6 +320,11 @@ anchors.leftMargin: 10
             PanelInfo{
                 x: 17
                 y: 152 - titleBar.height
+                // Привязываем свойства к данным из контроллера
+                serialText: tableController.serialText
+                minAngleText: tableController.minAngleText
+                typeText: tableController.typeText
+                activationDateText: tableController.activationDateText
             }
 
 
@@ -406,7 +411,11 @@ anchors.leftMargin: 10
 
 //                   }
                 CustomTable_1CH{
-
+                    id: customTable
+                    onRowSelected: {
+                        // Передаем индекс строки в контроллер
+                        tableController.processRow(rowIndex)
+                    }
                 }
 
             }

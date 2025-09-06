@@ -22,6 +22,7 @@ QApplication  app(argc, argv);
     engine.rootContext()->setContextProperty("comboBoxModel", mainLogick.getComboBoxModel());
     engine.rootContext()->setContextProperty("buttonHandler", mainLogick.getButtonHandler());
     engine.rootContext()->setContextProperty("tableModel", mainLogick.getTableModel());
+    engine.rootContext()->setContextProperty("tableController", mainLogick.getTableController());
 
 // Загрузка QML
     engine.addImportPath(":/");
