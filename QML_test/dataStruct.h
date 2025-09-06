@@ -60,7 +60,7 @@ struct OneChanel_t {
     QString group_3;       // 4
     QString group_4;       // 4
     QString steps;         // 2
-    QString endangle;      // 2
+    QString tiltAngle;     // 2
     QString hight;         // 3
     QString tiltOnly;      // 1
     QString SAR;           // 1
@@ -71,7 +71,7 @@ struct OneChanel_t {
     QString month;         // 2
     QString year;          // 4
     QString BR;            // 1
-    QString dir;           // 1
+    QString dir;           // 1 Motor revers
 
     bool parseFromString(const QString &data);
     bool operator<(const OneChanel_t &other) const;

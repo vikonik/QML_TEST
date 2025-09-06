@@ -78,7 +78,7 @@ bool OneChanel_t::parseFromString(const QString &data) {
     group_3 = data.mid(pos, 4); pos += 4;
     group_4 = data.mid(pos, 4); pos += 4;
     steps = data.mid(pos, 2); pos += 2;
-    endangle = data.mid(pos, 2); pos += 2;
+    tiltAngle = data.mid(pos, 2); pos += 2;
     hight = data.mid(pos, 3); pos += 3;
     tiltOnly = data.mid(pos, 1); pos += 1;
     SAR = data.mid(pos, 1); pos += 1;
@@ -101,7 +101,7 @@ void OneChanel_t::debugPrint() const {
     qDebug() << "Flag:" << flag;
     qDebug() << "Version FW:" << versionFW;
     qDebug() << "Groups:" << group_1 << group_2 << group_3 << group_4;
-    qDebug() << "Steps:" << steps << "EndAngle:" << endangle;
+    qDebug() << "Steps:" << steps << "EndAngle:" << tiltAngle;
     qDebug() << "Hight:" << hight << "TiltOnly:" << tiltOnly;
     qDebug() << "SAR:" << SAR << "CurrentPos:" << currentPosition;
     qDebug() << "Error:" << error << "Voltage:" << voltage;

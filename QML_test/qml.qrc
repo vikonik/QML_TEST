@@ -97,5 +97,9 @@
         <file>DeviceTableData.qml</file>
         <file>MainTable_1ch.qml</file>
         <file>CustomTable_1CH.qml</file>
+        <file>Image/iconGroup.png</file>
+        <file>Image/iconTilt.png</file>
+        <file>CustomCheckBoxTable.qml</file>
+        <file>Image/iconError.png</file>
     </qresource>
 </RCC>

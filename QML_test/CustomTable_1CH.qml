@@ -12,27 +12,21 @@ Rectangle {
 
     // Массив ширины колонок (пример значений)
     //  property var columnWidths: [75, 75, 50, 80]
-    property var columnsDef: [
-        { name: "Serial ID", width: 70 },
-        { name: "Name", width: 75 },
-        { name: "Type", width: 50 },
-        { name: "Status", width: 80 }
-    ]
-
     property var columnsHeaderDef: [
-        { name: "Serial ID", width: 70 },
+        { name: "Serial ID", width: 75 },
         { name: "Name", width: 75 },
-        { name: "Type", width: 50 },
-        { name: "Status", width: 80 }
+        { name: "Type", width: 60 },
+        { name: "Status", width: 75 }
     ]
 
     property var columnsDataDef: [
-        { name: "Group 1", width: 60 },
-        { name: "Group 2", width: 60 },
-        { name: "Group 3", width: 60 },
-        { name: "Description", width: 80 },
-        { name: "Height", width: 70 },
+        { name: "Group 1", width: 75 },
+        { name: "Group 2", width: 75 },
+        { name: "Group 3", width: 75 },
+        { name: "Group 4", width: 75 },
+        { name: "Height", width: 65 },
         { name: "Tilt", width: 50 },
+        { name: "Tilt only", width: 60 },
         { name: "Motor revers", width: 85 },
         { name: "Error", width: 70 }
 
@@ -91,27 +85,34 @@ Rectangle {
                 border.color: Style.borderColor
                 border.width: 1
 
+
                 Row {
                     anchors.verticalCenter: parent.verticalCenter
-                    spacing: 10
+                   // spacing: 10
 
-                    Item { width: 20; height: 1 } // Отступ
+                    Item { width: 30; height: 1 } // Отступ
 
                     Repeater {
                         model: columnsHeaderDef.length
-
-                        Text {
+                        Rectangle{
                             width: getColumnWidth(columnsHeaderDef, index)
-                            height: 30
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                            color: Style.buttonDefaultTextrColor
-                            font.pixelSize: Style.fontSizeLabel
-                            text: getColumnName(columnsHeaderDef, index)
+                            height: _left.height
+                            border.color: "transparent"
+                            border.width: 1
+                            color: "transparent"
+                            Text {
+                                anchors.centerIn: parent  // Центрирование текста относительно родителя
+//                                width: getColumnWidth(columnsHeaderDef, index)
+//                                height: 30
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                color: Style.buttonDefaultTextrColor
+                                font.pixelSize: Style.fontSizeLabel
+                                text: getColumnName(columnsHeaderDef, index)
+
+                            }
                         }
                     }
-
-
                 }
             }
 
@@ -130,21 +131,29 @@ Rectangle {
 
                 Row {
                     anchors.verticalCenter: parent.verticalCenter
-                    spacing: 10
+ //                   spacing: 10
 
-                    Item { width: 20; height: 1 } // Отступ
+//                    Item { width: 1; height: 1 } // Отступ
 
                     Repeater {
                         model: columnsDataDef.length
-
-                        Text {
+                        Rectangle{
                             width: getColumnWidth(columnsDataDef, index)
-                            height: 30
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                            color: Style.buttonDefaultTextrColor
-                            font.pixelSize: Style.fontSizeLabel
-                            text: getColumnName(columnsDataDef, index)
+                            height: tableParametorsHeader.height
+                            border.color: "transparent"
+                            border.width: 1
+                            color: "transparent"
+                            Text {
+//                                width: getColumnWidth(columnsDataDef, index)
+//                                height: 30
+                                anchors.centerIn: parent  // Центрирование текста относительно родителя
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                color: Style.buttonDefaultTextrColor
+                                font.pixelSize: Style.fontSizeLabel
+                                text: getColumnName(columnsDataDef, index)
+
+                            }
                         }
                     }
                 }
@@ -161,8 +170,8 @@ Rectangle {
             anchors.left: parent.left
             anchors.top: tableConttrollerTypeHeader.bottom
             anchors.bottom: parent.bottom
-            //  color: "transparent"
-            color: "red"
+              color: "transparent"
+            //color: "red"
             //            DeviceTable{
 
             //            }

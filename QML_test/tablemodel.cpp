@@ -106,6 +106,15 @@ void TableModel::loadDeviceData(const QVector<OneChanel_t>& data){
             row.append("1-CH");
             row.append(device.versionFW);  // Добавляем версию firmware
             row.append("1-CH");
+            row.append(device.group_1);
+            row.append(device.group_2);
+            row.append(device.group_3);
+            row.append(device.group_4);
+            row.append(device.hight);
+            row.append(device.tiltAngle);//Tilt
+            row.append(device.tiltOnly);
+            row.append(device.dir);//Motor Revers
+            row.append(device.error);
 
             // Добавляем строку в модель
             m_data.append(row);
