@@ -99,6 +99,7 @@ void TableModel::loadDeviceData(const QVector<OneChanel_t>& data){
     beginResetModel();
     // Очищаем существующие данные
         m_data.clear();
+        m_fullData = data; // Сохраняем полные данные
         // Заполняем модель данными из вектора
         for (const OneChanel_t &device : data) {
             QList<QVariant> row;
@@ -124,6 +125,11 @@ void TableModel::loadDeviceData(const QVector<OneChanel_t>& data){
         qDebug() << "Loaded" << m_data.size() << "rows from dataParser" ;
 }
 
+/**/
+// Добавляем метод для получения полных данных
+QVector<OneChanel_t> TableModel::getFullData() const {
+    return m_fullData;
+}
 /**/
 void TableModel::clear() {
     beginResetModel();

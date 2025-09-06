@@ -5,7 +5,7 @@
 // TableController.h
 #include <QObject>
 #include <QModelIndex>
-
+#include "dataparser.h"
 // Предварительное объявление класса
 class TableModel;
 
@@ -23,6 +23,8 @@ public:
     // Устанавливаем модель
     void setModel(TableModel *model);
 
+    void setDataParser(DataParser *dataParser); // Новый метод
+
     // Геттеры для свойств
     QString serialText() const;
     QString minAngleText() const;
@@ -37,6 +39,7 @@ signals:
 
 private:
     TableModel *m_model;
+    DataParser *m_dataParser;
     QString m_serialText;
     QString m_minAngleText;
     QString m_typeText;

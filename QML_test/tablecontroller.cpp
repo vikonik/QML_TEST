@@ -15,50 +15,59 @@ void TableController::setModel(TableModel *model)
     }
 }
 
+void TableController::setDataParser(DataParser *dataParser)
+{
+    m_dataParser = dataParser;
+}
+
 void TableController::processRow(int rowIndex)
 {
-    if (!m_model) {
-        qWarning() << "Model is not set!";
-        return;
-    }
+    if (!m_dataParser) {
+         qWarning() << "DataParser is not set!";
+         return;
+     }
 
-    // Получаем данные непосредственно из модели
-    // Используем существующие методы модели
-    QModelIndex index = m_model->index(rowIndex, 0);
-    QVariant rowData = m_model->data(index, TableModel::RowDataRole);
+     // Получаем полные данные из DataParser
+     QVector<OneChanel_t> devices = m_dataParser->getOneChanelDevices();
 
-    if (!rowData.isValid()) {
-        qWarning() << "Invalid row data for index:" << rowIndex;
-        return;
-    }
+     // Получаем полные данные из модели
+    // QVector<OneChanel_t> devices = m_model->getFullData();
 
-    // Предполагаем, что rowData - это QList<QVariant>
-    QList<QVariant> row = rowData.value<QList<QVariant>>();
 
-    if (row.size() < 10) { // Проверяем, что достаточно данных
-        qWarning() << "Row data is too short:" << row.size();
-        return;
-    }
+     if (rowIndex < 0 || rowIndex >= devices.size()) {
+         qWarning() << "Invalid row index:" << rowIndex;
+         return;
+     }
 
-    qDebug() << "Processing row:" << rowIndex << "Data:" << row;
+     const OneChanel_t &device = devices[rowIndex];
 
-    // Извлекаем нужные данные (адаптируйте под вашу структуру)
-    m_serialText = row.value(0).toString();      // address
-    m_minAngleText = row.value(9).toString();    // tiltAngle
-    m_typeText = "1-Ch";                         // фиксированное значение
-    //m_activationDateText = tr("%1.%2.%3").arg(row.value(9)).arg(row.value(9)).arg(row.value(9));//"08.12.04";           // Сборное значение
-    m_activationDateText = row.value(18).toString();
+     // Извлекаем нужные данные
+     m_serialText = device.address;
+     m_minAngleText = device.tiltAngle;
+     m_typeText = "1-Ch";
 
-    QString day = row.value(16).toString();
-    QString month = row.value(17).toString();
-    QString year = row.value(18).toString();
-    qDebug() << "Date "<< day << month << year << row.value(16).toString();
+     // Форматируем дату
+     QString formattedDay = device.day.length() == 1 ? "0" + device.day : device.day;
+     QString formattedMonth = device.month.length() == 1 ? "0" + device.month : device.month;
 
-    // Здесь можно добавить любую дополнительную обработку
+     // Берем последние две цифры года
+     QString formattedYear = device.year;
+     if (device.year.length() >= 2) {
+         formattedYear = device.year.right(2);
+     } else if (device.year.length() == 1) {
+         formattedYear = "0" + device.year;
+     }
 
-    // Уведомляем об изменении данных
-    emit dataProcessed();
+     // Собираем итоговую строку даты
+     m_activationDateText = QString("%1.%2.%3")
+         .arg(formattedDay)
+         .arg(formattedMonth)
+         .arg(formattedYear);
+
+     // Уведомляем об изменении данных
+     emit dataProcessed();
 }
+
 
 // Реализация геттеров
 QString TableController::serialText() const { return m_serialText; }

@@ -21,6 +21,7 @@ MainLogick::MainLogick(QObject *parent) : QObject(parent),
     dataParser = new DataParser(this);
     tableController = new TableController(this);
     tableController->setModel(tableModel);
+    tableController->setDataParser(dataParser); // Устанавливаем связь
     deviceType.clear();
 
     // Показываем окно отладки
@@ -60,7 +61,7 @@ void MainLogick::setConnect(){
     connect(serial, &Serial::rawDataReceived, dataParser, &DataParser::processRawData);
   //  connect(dataParser, &DataParser::devicesUpdated, tableModel, &TableModel::loadDeviceData);
     connect(dataParser, &DataParser::devicesUpdated, this, [this](){
-        tableModel->loadDeviceData(dataParser->getOneChanelDevices());
+        tableModel->loadDeviceData(dataParser->getOneChanelDevices());//Данные для обработки по клику на строку брать не из строки а отсюда
     });
 //    // Добавляем соединение для обработки полученных данных
 //    connect(serial, &Serial::dataReceived, this, &MainLogick::detectDeviceType);

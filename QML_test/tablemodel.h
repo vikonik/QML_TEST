@@ -39,6 +39,7 @@ public:
     void setModelData(const QList<QList<QVariant>> &newData);
 
     Q_INVOKABLE QString getRowIcon(int row, bool isSelected) const;
+    QVector<OneChanel_t> getFullData() const;
 public slots:
 
     void loadDeviceData(const QVector<OneChanel_t> &data);
@@ -48,4 +49,5 @@ signals:
 private:
     QList<QList<QVariant>> m_data;
     QList<int> m_editableColumns; // Индексы редактируемых столбцов
+     QVector<OneChanel_t> m_fullData; // Для хранения полных данных
 };
