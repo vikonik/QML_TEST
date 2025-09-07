@@ -162,7 +162,7 @@ bool TableModel::isCellEditable(int row, int column) const {
     // Первая строка (заголовки) не редактируется
     if (row == 0) return false;
 
-    return (m_editableColumns.contains(column) || column == 5) &&
+    return (m_editableColumns.contains(column) || column == 0) &&
            row >= 0 && row < m_data.size() &&
            column >= 0 && column < m_data[row].size();
 }

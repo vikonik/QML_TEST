@@ -6,10 +6,16 @@ Item {
     id: panelInfo
     width: 223
     height: 134
-    property string serialText: ""
-    property string minAngleText: ""
-    property string typeText: ""
-    property string activationDateText: ""
+//    property string serialText: ""
+//    property string minAngleText: ""
+//    property string typeText: ""
+//    property string activationDateText: ""
+
+    // Прямое использование свойств контроллера
+    property string serialText: tableController.serialText
+    property string minAngleText: tableController.minAngleText
+    property string typeText: tableController.typeText
+    property string activationDateText: tableController.activationDateText
   //  color: "transparent"
 Rectangle{
     id: rowText_1
@@ -85,6 +91,16 @@ Rectangle{
                 cursorVisible: true             // видимый курсор
                 inputMethodHints: Qt.ImhNone    // можно менять для цифр, паролей и т.д.
                 //background: null                 // прозрачный фон, если нужен
+                // Обработка нажатия Enter
+                onAccepted: {
+                    // Вызываем метод контроллера для обновления значения
+                    tableController.updateSerialValue(text)
+                }
+
+                // Обновляем свойство при изменении текста
+                onTextChanged: {
+                    serialText = text
+                }
             }
 
             // Полоса в центре

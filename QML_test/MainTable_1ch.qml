@@ -132,7 +132,8 @@ Rectangle {
                             acceptedButtons: Qt.LeftButton
                             onClicked: {
                                 rowView.selectedRow = rowIndex
-                                content.rowSelected(rowIndex); // Испускаем сигнал
+                                //content.rowSelected(rowIndex); // Испускаем сигнал
+                                tableController.processRow(rowIndex);
                             }
                         }
 
