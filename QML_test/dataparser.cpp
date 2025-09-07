@@ -1,6 +1,7 @@
 #include "dataparser.h"
 #include <QDebug>
 
+#define ONE_CHANEL_DATA_LEN 50
 // Реализация операторов сравнения
 bool Chanel_t::operator<(const Chanel_t &other) const {
     return address.toInt() < other.address.toInt();
@@ -66,7 +67,7 @@ void SixChanel_t::debugPrint() const {
 
 // Реализация методов для OneChanel_t
 bool OneChanel_t::parseFromString(const QString &data) {
-    if (data.length() != 49) return false;
+    if (data.length() != ONE_CHANEL_DATA_LEN) return false;
 
     int pos = 0;
     address = data.mid(pos, 4); pos += 4;
@@ -117,7 +118,7 @@ DataParser::DataParser(QObject *parent) : QObject(parent),
 }
 
 DataParser::DeviceType DataParser::identifyDevice(const QString &data) {
-    if (data.length() == 49 /*&& data.startsWith("0000")*/&& data.at(4) == 'A') {
+    if (data.length() == ONE_CHANEL_DATA_LEN /*&& data.startsWith("0000")*/&& data.at(4) == 'A') {
         return OneChanelDevice;
     }
     else if (data.length() == 16 /*&& data.startsWith("0000") */&& data.at(4) == 'B') {

@@ -74,6 +74,7 @@ QStringList Serial::getSerialPort()
 
 bool Serial::sendData(const QString &data)
 {
+    qDebug() << "sendData QString";
     if (serial.isOpen() && serial.isWritable()) {
         QByteArray byteData = data.toUtf8();
         qint64 bytesWritten = serial.write(byteData);
@@ -97,6 +98,7 @@ bool Serial::sendData(const QString &data)
 
 bool Serial::sendData(const QByteArray &data)
 {
+    qDebug() << "sendData QByteArray";
     if (serial.isOpen() && serial.isWritable()) {
         qint64 bytesWritten = serial.write(data);
 

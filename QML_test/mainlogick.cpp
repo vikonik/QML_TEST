@@ -57,7 +57,12 @@ void MainLogick::setConnect(){
     connect(buttonHandler, &ButtonHandler::signalConnect, this, &MainLogick::openPort);
     connect(buttonHandler, &ButtonHandler::signalDisconnect, serial, &Serial::closePort);
     connect(buttonHandler, &ButtonHandler::signalSkanID,this, &MainLogick::scanNet);
- //   connect(this, SIGNAL(signalSendData(QByteArray*)), serial, SLOT(sendData(QByteArray*)));
+    //connect(this, SIGNAL(signalSendData(QByteArray*)), serial, SLOT(sendData(QByteArray*)));
+//connect(this, SIGNAL(signalSendData(const QByteArray*)), serial, SLOT(sendData(const QByteArray*)));
+
+    connect(this, &MainLogick::signalSendData,
+            serial,
+            static_cast<bool (Serial::*)(const QByteArray &)>(&Serial::sendData));
     connect(serial, &Serial::rawDataReceived, dataParser, &DataParser::processRawData);
   //  connect(dataParser, &DataParser::devicesUpdated, tableModel, &TableModel::loadDeviceData);
     connect(dataParser, &DataParser::devicesUpdated, this, [this](){
@@ -102,7 +107,7 @@ void MainLogick::scanNet()
     debugWindow->log("Starting network scan...");
     QByteArray command = ">Scan?<";
 
-    emit signalSendData(&command);
+    emit signalSendData(command);
 }
 
 /*

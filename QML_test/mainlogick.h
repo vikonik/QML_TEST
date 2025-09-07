@@ -30,7 +30,7 @@ public:
     TableController* getTableController(){return tableController;}
 
 signals:
-    void signalSendData(QByteArray *data);
+     void signalSendData(const QByteArray &data);
 //    void signalSendData(QString *data);
         void portsUpdated(); // Сигнал об обновлении списка портов
 

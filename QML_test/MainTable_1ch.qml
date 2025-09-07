@@ -17,18 +17,18 @@ Rectangle {
 
     property var columnWidths: [
         { name: "Serial ID", width: 75 },
-        { name: "Name", width: 75 },
-        { name: "Type", width: 60 },
-        { name: "Status", width: 80 },
-        { name: "Group 1", width: 80 },
+        { name: "Devcie", width: 75 },
+        { name: "FW", width: 60 },
+        { name: "Channel", width: 75 },
+        { name: "Error", width: 75 },
+        { name: "Group 1", width: 75 },
         { name: "Group 2", width: 75 },
         { name: "Group 3", width: 75 },
         { name: "Group 4", width: 75 },
         { name: "Height", width: 65 },
-        { name: "Tilt", width: 50 },
-        { name: "Tilt only", width: 60 },
-        { name: "Motor revers", width: 85 },
-        { name: "Error", width: 70 }
+        { name: "End Angle", width: 70 },
+        { name: "Tilt only", width: 65 },
+        { name: "Motor revers", width: 90 }
     ]
 
     function getColumnWidth(columnsArray, columnIndex) {
@@ -117,8 +117,8 @@ Rectangle {
                             anchors.right: parent.right
                             width: 1
                             height: parent.height
-                            color: columnIndex === 3 ? Style.borderColor : "transparent"
-                            visible: columnIndex === 3
+                            color: columnIndex === 4 ? Style.borderColor : "transparent"
+                            visible: columnIndex === 4
                             border.width: 2
                         }
 

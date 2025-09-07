@@ -58,15 +58,33 @@ Rectangle{
                 anchors.margins: 5
             }
 
-            Text{
-                id: serial
-                text:serialText
+//            Text{
+//                id: serial_ID
+//                text:serialText
+//                color: Style.fontColorValue
+//                font.family: Style.fontValue
+//                font.pixelSize: Style.fontSizeValue
+//                anchors.left: parent.left
+//                anchors.verticalCenter: parent.verticalCenter
+//                anchors.margins: 35
+//            }
+
+            TextInput {
+                id: serial_ID
+                text: serialText
                 color: Style.fontColorValue
                 font.family: Style.fontValue
                 font.pixelSize: Style.fontSizeValue
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.margins: 35
+
+                // Настройки поля ввода
+                //focus: true                     // автоматически ставит фокус (по желанию)
+                selectByMouse: true             // позволяет выделять текст мышью
+                cursorVisible: true             // видимый курсор
+                inputMethodHints: Qt.ImhNone    // можно менять для цифр, паролей и т.д.
+                //background: null                 // прозрачный фон, если нужен
             }
 
             // Полоса в центре

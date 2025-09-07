@@ -14,9 +14,10 @@ Rectangle {
     //  property var columnWidths: [75, 75, 50, 80]
     property var columnsHeaderDef: [
         { name: "Serial ID", width: 75 },
-        { name: "Name", width: 75 },
-        { name: "Type", width: 60 },
-        { name: "Status", width: 75 }
+        { name: "Devcie", width: 75 },
+        { name: "FW", width: 60 },
+        { name: "Channel", width: 75 },
+        { name: "Error", width: 75 }
     ]
 
     property var columnsDataDef: [
@@ -25,10 +26,9 @@ Rectangle {
         { name: "Group 3", width: 75 },
         { name: "Group 4", width: 75 },
         { name: "Height", width: 65 },
-        { name: "Tilt", width: 50 },
-        { name: "Tilt only", width: 60 },
-        { name: "Motor revers", width: 85 },
-        { name: "Error", width: 70 }
+        { name: "End Angle", width: 70 },
+        { name: "Tilt only", width: 65 },
+        { name: "Motor revers", width: 90 }
 
     ]
 
@@ -53,6 +53,12 @@ Rectangle {
         return 100; // значение по умолчанию
     }
 
+    readonly property int columntableConttrollerWidth: getColumnWidth(columnsHeaderDef, 0) +
+                                        getColumnWidth(columnsHeaderDef, 1) +
+                                        getColumnWidth(columnsHeaderDef, 2) +
+                                        getColumnWidth(columnsHeaderDef, 3) +
+                                        getColumnWidth(columnsHeaderDef, 4)
+
     //Таблица типов
     Rectangle {
         id: tableConttrollerType
@@ -74,15 +80,20 @@ Rectangle {
             color: "transparent"
             //color: "green"
             border.color: Style.borderColor
+            //border.color: "red"
             border.width: 1
 
             Rectangle {
                 id: _left
-                width: 320
+               width:  columntableConttrollerWidth + 30
+//               Component.onCompleted: {
+//                   console.log("Ширина заголовка:",columntableConttrollerWidth)
+//                   console.log("Ширина заголовка:",width)
+//                }
                 height: parent.height
                 //                   color: Style.backgroundColor
                 color: "transparent"
-                //                color: "green"
+                //color: "green"
                 border.color: Style.borderColor
                 border.width: 1
 

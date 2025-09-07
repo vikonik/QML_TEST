@@ -51,27 +51,27 @@ struct SixChanel_t {
 
 // Структура для одноканального устройства
 struct OneChanel_t {
-    QString address;       // 4
-    QString type;          // 1
-    QString flag;          // 1
-    QString versionFW;     // 1
-    QString group_1;       // 4
-    QString group_2;       // 4
-    QString group_3;       // 4
-    QString group_4;       // 4
-    QString steps;         // 2
-    QString tiltAngle;     // 2
-    QString hight;         // 3
-    QString tiltOnly;      // 1
-    QString SAR;           // 1
+    QString address;         // 4
+    QString type;            // 1
+    QString flag;            // 1
+    QString versionFW;       // 1
+    QString group_1;         // 4
+    QString group_2;         // 4
+    QString group_3;         // 4
+    QString group_4;         // 4
+    QString steps;           // 2
+    QString tiltAngle;       // 2
+    QString hight;           // 3
+    QString tiltOnly;        // 1
+    QString SAR;             // 1
     QString currentPosition; // 3
-    QString error;         // 2
-    QString voltage;       // 3
-    QString day;           // 2
-    QString month;         // 2
-    QString year;          // 4
-    QString BR;            // 1
-    QString dir;           // 1 Motor revers
+    QString error;           // 2
+    QString voltage;         // 3
+    QString day;             // 2
+    QString month;           // 2
+    QString year;            // 4
+    QString BR;              // 1
+    QString dir;             // 1 Motor revers
 
     bool parseFromString(const QString &data);
     bool operator<(const OneChanel_t &other) const;
