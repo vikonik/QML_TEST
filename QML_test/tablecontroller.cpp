@@ -43,7 +43,7 @@ void TableController::processRow(int rowIndex)
     // Извлекаем нужные данные
     m_serialText = device.address;
     m_minAngleText = device.tiltAngle;
-    m_typeText = "1-Ch";
+    m_typeText = device.versionFW;
 
     // Форматируем дату
     QString formattedDay = device.day.length() == 1 ? "0" + device.day : device.day;
@@ -65,6 +65,7 @@ void TableController::processRow(int rowIndex)
 
     // Уведомляем об изменении данных
     emit dataProcessed();
+    qDebug()<<"processRow complite" << m_serialText << "row index:" << rowIndex;
 }
 
 /*
@@ -72,14 +73,24 @@ void TableController::processRow(int rowIndex)
 */
 void TableController::updateSerialValue(const QString &newValue)
 {
-    if (!m_model) {
-        qWarning() << "Cannot update serial value: model not set";
-        return;
-    }
+    if (!m_model || m_selectedRow < 0 || !m_dataParser) {
+           qWarning() << "Cannot update serial value: model not set, no row selected, or data parser not set";
+           return;
+       }
+
+    // Получаем текущие данные
+        QVector<OneChanel_t> devices = m_dataParser->getOneChanelDevices();
 
     if (m_selectedRow < 0) {
         qWarning() << "Cannot update serial value: no row selected";
         return;
+    }
+
+    if (m_selectedRow < devices.size()) {
+        // Обновляем исходные данные
+        devices[m_selectedRow].address = newValue;
+        // Здесь нужно добавить метод в DataParser для обновления устройств,
+        m_dataParser->setOneChanelDevices(devices);
     }
 
     // Обновляем значение в модели
@@ -89,7 +100,7 @@ void TableController::updateSerialValue(const QString &newValue)
     m_serialText = newValue;
     emit dataProcessed();
 
-    qDebug() << "Updated serial value to:" << newValue << "for row:" << m_selectedRow;
+    qDebug() << "Updated serial value to:" << newValue << "for row:" << m_selectedRow << "m_serialText " << m_serialText;
 }
 
 /**/
@@ -106,7 +117,10 @@ void TableController::setSelectedRow(int row)
     }
 }
 // Реализация геттеров
-QString TableController::serialText() const { return m_serialText; }
+QString TableController::serialText() const {
+     qDebug() << "serialText m_serialText " << m_serialText;
+    return m_serialText;
+}
 QString TableController::minAngleText() const { return m_minAngleText; }
 QString TableController::typeText() const { return m_typeText; }
 QString TableController::activationDateText() const { return m_activationDateText; }

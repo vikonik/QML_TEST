@@ -30,6 +30,8 @@ public:
     // Сброс состояния парсера
     void resetParserState();
 
+public slots:
+    void setOneChanelDevices(const QVector<OneChanel_t> &devices);
 signals:
     void oneChanelDataReceived(const OneChanel_t &data);
     void sixChanelDataReceived(const SixChanel_t &data);

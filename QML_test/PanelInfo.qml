@@ -99,7 +99,7 @@ Rectangle{
 
                 // Обновляем свойство при изменении текста
                 onTextChanged: {
-                    serialText = text
+                    //serialText = text
                 }
             }
 

@@ -272,3 +272,11 @@ void DataParser::resetParserState() {
     m_buffer.clear();
     qDebug() << "Состояние парсера сброшено";
 }
+
+
+/**/
+void DataParser::setOneChanelDevices(const QVector<OneChanel_t> &devices)
+{
+    m_oneChanelDevices = devices;
+    emit devicesUpdated();
+}

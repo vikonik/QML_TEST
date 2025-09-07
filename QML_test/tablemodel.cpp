@@ -104,9 +104,9 @@ void TableModel::loadDeviceData(const QVector<OneChanel_t>& data){
         for (const OneChanel_t &device : data) {
             QList<QVariant> row;
             row.append(device.address);    // Добавляем адрес
-            row.append("1-CH");
+            row.append("Device");
             row.append(device.versionFW);  // Добавляем версию firmware
-            row.append("1-CH");
+            row.append("1");//Номер канада
             row.append(device.error);
             row.append(device.group_1);
             row.append(device.group_2);
@@ -185,11 +185,11 @@ void TableModel::updateCell(int row, int column, const QVariant &value) {
     // Обновляем значение
 
     // Для 6-й колонки преобразуем значение в "1" или "0"
-    if (column == 5) {
-        m_data[row][column] = value.toBool() ? "1" : "0";
-    } else {
-        m_data[row][column] = value;
-    }
+//    if (column == 5) {
+//        m_data[row][column] = value.toBool() ? "1" : "0";
+//    } else {
+//        m_data[row][column] = value;
+//    }
 
     // Уведомляем об изменении конкретной строки
     QModelIndex modelIndex = createIndex(row, 0);
