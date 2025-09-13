@@ -81,9 +81,9 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                         rowView.selectedRow = rowIndex;
-                         content.rowSelected(rowIndex); // Испускаем сигнал
-                     }
+                        rowView.selectedRow = rowIndex;
+                        content.rowSelected(rowIndex); // Испускаем сигнал
+                    }
                 }
             }
 
@@ -112,7 +112,7 @@ Rectangle {
                         //border.color: "blue"
                         //border.width: 1
 
-                        // Добавляем правую границу для ячейки с индексом 3
+                        // Добавляем правую границу для ячейки с индексом 4
                         Rectangle {
                             anchors.right: parent.right
                             width: 1
@@ -125,6 +125,9 @@ Rectangle {
                         property int columnIndex: model.index
                         property int actualRowIndex: rowDelegate.rowIndex
                         property string columnName: content.getColumnName(content.columnWidths, columnIndex)
+                        property bool editable: columnName === "Group 1" || columnName === "Group 2" ||
+                                                columnName === "Group 3" || columnName === "Group 4" ||
+                                                columnName === "Height"|| columnName === "End Angle"
 
                         // Область для выбора строки
                         MouseArea {
@@ -134,13 +137,24 @@ Rectangle {
                                 rowView.selectedRow = rowIndex
                                 //content.rowSelected(rowIndex); // Испускаем сигнал
                                 tableController.processRow(rowIndex);
+                                rowView.selectedRow = rowIndex
+                                tableController.processRow(rowIndex);
                             }
+                            onDoubleClicked: {
+                                console.log("Double Click")
+                                if (cellDelegate.editable && !textInput.visible) {
+                                    startEditing()
+                                }
+                            }
+                            //                            onDragChanged: {
+                            //                            console.log("onDragChanged")
+                            //                            }
                         }
 
                         Rectangle{//Для отрисовки границ
                             width: getColumnWidth(columnWidths, index)
                             height: parent.height
-                            border.color: "transparent"
+                            //border.color: "transparent"
                             // border.color: columnIndex === 3 ? Style.specialBorderColor : "transparent"
                             border.width: 1
                             color: "transparent"
@@ -153,11 +167,15 @@ Rectangle {
                                     left: parent.left
                                     leftMargin: 10
                                     right: parent.right
+
+
+
                                 }
                                 //   spacing: 10
                                 visible:  (columnName === "Group 1" || columnName === "Group 2" ||
                                            columnName === "Group 3" || columnName === "Group 4" ||
-                                           columnName === "Tilt" || columnName === "Error") && !textInput.visible
+                                           /*columnName === "Height"  ||*/ columnName === "End Angle" ||
+                                           /*columnName === "Tilt" ||*/ columnName === "Error") && !textInput.visible
 
                                 //изображение и текст
                                 Image {
@@ -165,38 +183,46 @@ Rectangle {
                                     // width: 16
                                     height: 16
                                     source: {
-                                        if(columnName === "Tilt")
+                                        if(columnName === "End Angle")
                                             return "qrc:/Image/iconTilt.png";
-                                        else if( columnName === "Error" && rowData !== "00")
+                                        else if( columnName === "Error" && modelData !== "00")
                                             return "qrc:/Image/iconError.png";
-
-                                        else
+                                        else if(columnName === "Group 1" || columnName === "Group 2" || columnName === "Group 3" || columnName === "Group 4")
                                             return "qrc:/Image/iconGroup.png";
+                                        else
+                                            return "";
+
                                     }
                                     anchors.verticalCenter: parent.verticalCenter
+                                    visible: source !== ""
                                 }
 
                                 Text {
-                                    text: modelData
+                                    text: (columnName === "Error" && modelData === "00") ? "" : modelData
                                     elide: Text.ElideMiddle
                                     color: Style.buttonDefaultTextrColor
                                     font.pixelSize: Style.fontSizeLabel
-                                    horizontalAlignment: columnIndex === 0 ? Text.AlignLeft : Text.AlignHCenter
+                                    horizontalAlignment: columnName === "Serial ID" ? Text.AlignLeft : Text.AlignHCenter
+
                                 }
                             }
                         }
 
-                            //Специальный Checkbox для таблицы
-                            CustomCheckBoxTable {
-                                id: customCheckBoxTable
-                                anchors.centerIn: parent
-                                visible:  (columnName === "Tilt only" ||  columnName === "Motor revers" )&& !textInput.visible
-                                checked: rowData === "1" || rowData === "true" // Поддержка разных форматов
-                                color: "transparent"
-                                onToggled: {
-                                    tableModel.updateCell(actualRowIndex, columnIndex, checked ? "1" : "0")
-                                }
+                        //Специальный Checkbox для таблицы
+                        CustomCheckBoxTable {
+                            id: customCheckBoxTable
+                            anchors.centerIn: parent
+                            visible:  (columnName === "Tilt only" ||  columnName === "Motor revers" )&& !textInput.visible
+                            checked: modelData === "1" || modelData === "true" // Поддержка разных форматов
+                            color: "transparent"
+                            onToggled: {
+                                tableModel.updateCell(actualRowIndex, columnIndex, checked ? "1" : "0")
                             }
+
+//                            Component.onCompleted: {
+//                                console.log("Initial checked state:", checked, "rowData:", modelData)
+//                            }
+                        }
 
 
                         // Обычный текст для других колонок
@@ -213,10 +239,10 @@ Rectangle {
                             color: Style.buttonDefaultTextrColor
                             font.pixelSize: Style.fontSizeLabel
                             visible: (columnName !== "Group 1" && columnName !== "Group 2" &&
-                                      columnName !== "Group 3"&& columnName !== "Group 4" &&
-                                      columnName !== "Tilt only" && columnName !== "Motor revers" &&
-                                      columnName !== "Tilt"  && columnName !== "Error")
-                            horizontalAlignment: columnIndex === 0 ? Text.AlignLeft : Text.AlignHCenter
+                                      columnName !== "Group 3" && columnName !== "Group 4" &&
+                                      columnName !== "End Angle" && columnName !== "End Angle" && columnName !== "Motor revers" &&
+                                      columnName !== "Tilt only"  &&  columnName !== "Error")
+                            horizontalAlignment: columnName === "Serial ID" ? Text.AlignLeft : Text.AlignHCenter
                         }
 
 
@@ -229,14 +255,34 @@ Rectangle {
                                 leftMargin: 10
                                 right: parent.right
                             }
+                            visible: cellDelegate.editable && activeFocus
                             text: modelData
                             font.pixelSize: 12
-                            visible: false
+                            //  visible: false
                             clip: true
                             selectByMouse: true
 
                             onEditingFinished: finishEditing()
                             onActiveFocusChanged: if (!activeFocus) finishEditing()
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+
+        /*****************************************/
+
+        /***************************************/
+
+                        function startEditing() {
+                            textInput.text = modelData
+                            textInput.visible = true
+                            textInput.forceActiveFocus()
+                            textInput.selectAll()
+                        }
+
+                        function finishEditing() {
+                            if (textInput.visible) {
+                                tableModel.updateCell(actualRowIndex, columnIndex, textInput.text)
+                                textInput.visible = false
+                            }
                         }
                     }
                 }
