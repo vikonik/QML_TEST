@@ -27,6 +27,9 @@ struct Chanel_t {
     bool operator<(const Chanel_t &other) const;
 };
 
+
+
+
 // Структура для шестиканального устройства
 struct SixChanel_t {
     QString address;       // 4
@@ -48,6 +51,9 @@ struct SixChanel_t {
     bool operator<(const SixChanel_t &other) const;
     void debugPrint() const;
 };
+
+
+
 
 // Структура для одноканального устройства
 struct OneChanel_t {

@@ -91,50 +91,193 @@ void TableModel::loadCSV(const QString &filePath) {
 }
 
 /*
-Получаем данные из DataParser
+Получаем данные из DataParser для одноканальных устройств
 */
-void TableModel::loadDeviceData(const QVector<OneChanel_t>& data){
-
-    qDebug()<<"I am here";
+void TableModel::loadOneChanelData(const QVector<OneChanel_t>& data){
     beginResetModel();
-    // Очищаем существующие данные
-        m_data.clear();
-        m_fullData = data; // Сохраняем полные данные
-        // Заполняем модель данными из вектора
-        for (const OneChanel_t &device : data) {
-            QList<QVariant> row;
-            row.append(device.address);    // Добавляем адрес
-            row.append("Device");
-            row.append(device.versionFW);  // Добавляем версию firmware
-            row.append("1");//Номер канада
-            row.append(device.error);
-            row.append(device.group_1);
-            row.append(device.group_2);
-            row.append(device.group_3);
-            row.append(device.group_4);
-            row.append(device.hight);
-            row.append(device.tiltAngle);//Tilt
-            row.append(device.tiltOnly);
-            row.append(device.dir);//Motor Revers
+    m_oneChanelData = data;
+    m_sixChanelData.clear();
+    rebuildTableData();
+    endResetModel();
+}
 
+/*
+Получаем данные из DataParser для шестиканальных устройств
+*/
+void TableModel::loadSixChanelData(const QVector<SixChanel_t>& data){
+    beginResetModel();
+    m_sixChanelData = data;
+    m_oneChanelData.clear();
+    rebuildTableData();
+    endResetModel();
+}
 
-            // Добавляем строку в модель
-            m_data.append(row);
-            qDebug() << "++";
+/*
+Добавляем одноканальное устройство
+*/
+void TableModel::addOneChanelDevice(const OneChanel_t &device) {
+    // Поиск существующего устройства по адресу
+    bool found = false;
+    for (int i = 0; i < m_oneChanelData.size(); ++i) {
+        if (m_oneChanelData[i].address == device.address) {
+            m_oneChanelData[i] = device;
+            found = true;
+            break;
         }
-        endResetModel();
-        qDebug() << "Loaded" << m_data.size() << "rows from dataParser" ;
+    }
+
+    // Если устройство не найдено, добавляем его
+    if (!found) {
+        m_oneChanelData.append(device);
+    }
+
+    // Перестраиваем таблицу
+    rebuildTableData();
+}
+
+/*
+Добавляем шестиканальное устройство
+*/
+void TableModel::addSixChanelDevice(const SixChanel_t &device) {
+    // Поиск существующего устройства по адресу
+    bool found = false;
+    for (int i = 0; i < m_sixChanelData.size(); ++i) {
+        if (m_sixChanelData[i].address == device.address) {
+            m_sixChanelData[i] = device;
+            found = true;
+            break;
+        }
+    }
+
+    // Если устройство не найдено, добавляем его
+    if (!found) {
+        m_sixChanelData.append(device);
+    }
+
+    // Перестраиваем таблицу
+    rebuildTableData();
+}
+
+/*
+Перестраиваем табличные данные на основе сохраненных устройств
+*/
+void TableModel::rebuildTableData() {
+    beginResetModel();
+    m_data.clear();
+    m_rowInfo.clear();
+
+    // Добавляем одноканальные устройства
+    for (int i = 0; i < m_oneChanelData.size(); ++i) {
+        const OneChanel_t &device = m_oneChanelData[i];
+        QList<QVariant> row;
+
+        row.append(device.address);    // Serial ID
+        row.append("Device");          // Device
+        row.append(device.versionFW);  // FW
+        row.append("1");               // Channel
+        row.append(device.error);      // Error
+        row.append(device.group_1);    // Group 1
+        row.append(device.group_2);    // Group 2
+        row.append(device.group_3);    // Group 3
+        row.append(device.group_4);    // Group 4
+        row.append(device.hight);      // Height
+        row.append(device.tiltAngle);  // End Angle
+        row.append(device.tiltOnly);   // Tilt only
+        row.append(device.dir);        // Motor revers
+
+        m_data.append(row);
+
+        TableRowInfo info;
+        info.deviceType = OneChannelDevice;
+        info.deviceIndex = i;
+        info.channelIndex = 0;
+        m_rowInfo.append(info);
+    }
+
+    // Добавляем шестиканальные устройства
+    for (int i = 0; i < m_sixChanelData.size(); ++i) {
+        const SixChanel_t &device = m_sixChanelData[i];
+
+        // Массив каналов для удобного доступа
+        const Chanel_t* channels[6] = {
+            &device.chanel_1, &device.chanel_2, &device.chanel_3,
+            &device.chanel_4, &device.chanel_5, &device.chanel_6
+        };
+
+        // Для каждого канала создаем отдельную строку
+        for (int channelIdx = 0; channelIdx < 6; ++channelIdx) {
+            const Chanel_t* channel = channels[channelIdx];
+            QList<QVariant> row;
+
+            // Заполняем общие данные только для первого канала
+            if (channelIdx == 0) {
+                row.append(device.address);    // Serial ID
+                row.append("Device");          // Device
+                row.append(device.versionFW);  // FW
+            } else {
+                row.append(""); // Пустое поле Serial ID
+                row.append(""); // Пустое поле Device
+                row.append(""); // Пустое поле FW
+            }
+
+            row.append(channel->chanel);       // Channel
+            row.append(channel->error);        // Error
+            row.append(channel->group_1);      // Group 1
+            row.append(channel->group_2);      // Group 2
+            row.append(channel->group_3);      // Group 3
+            row.append(channel->group_4);      // Group 4
+            row.append(channel->hight);        // Height
+            row.append(channel->endangle);     // End Angle
+            row.append(channel->tiltOnly);     // Tilt only
+            row.append(channel->dir);          // Motor revers
+
+            m_data.append(row);
+
+            TableRowInfo info;
+            info.deviceType = SixChannelDevice;
+            info.deviceIndex = i;
+            info.channelIndex = channelIdx;
+            m_rowInfo.append(info);
+        }
+    }
+
+    endResetModel();
+    qDebug() << "Rebuilt table with" << m_data.size() << "rows";
+}
+
+/*
+Получаем информацию о строке
+*/
+TableModel::TableRowInfo TableModel::getRowInfo(int row) const {
+    if (row >= 0 && row < m_rowInfo.size()) {
+        return m_rowInfo[row];
+    }
+
+    TableRowInfo info;
+    info.deviceType = OneChannelDevice;
+    info.deviceIndex = -1;
+    info.channelIndex = -1;
+    return info;
 }
 
 /**/
-// Добавляем метод для получения полных данных
-QVector<OneChanel_t> TableModel::getFullData() const {
-    return m_fullData;
+// Добавляем метод для получения полных данных одноканальных устройств
+QVector<OneChanel_t> TableModel::getOneChanelData() const {
+    return m_oneChanelData;
 }
+
+// Добавляем метод для получения полных данных шестиканальных устройств
+QVector<SixChanel_t> TableModel::getSixChanelData() const {
+    return m_sixChanelData;
+}
+
 /**/
 void TableModel::clear() {
     beginResetModel();
     m_data.clear();
+    m_oneChanelData.clear();
+    m_sixChanelData.clear();
+    m_rowInfo.clear();
     endResetModel();
 }
 
@@ -183,13 +326,57 @@ void TableModel::updateCell(int row, int column, const QVariant &value) {
     }
 
     // Обновляем значение
+    m_data[row][column] = value;
 
-    // Для 6-й колонки преобразуем значение в "1" или "0"
-//    if (column == 5) {
-//        m_data[row][column] = value.toBool() ? "1" : "0";
-//    } else {
-//        m_data[row][column] = value;
-//    }
+    // Обновляем исходные данные
+    TableRowInfo info = getRowInfo(row);
+    if (info.deviceType == OneChannelDevice && info.deviceIndex >= 0 && info.deviceIndex < m_oneChanelData.size()) {
+        OneChanel_t &device = m_oneChanelData[info.deviceIndex];
+        // Обновляем соответствующее поле устройства
+        switch (column) {
+            case 0: device.address = value.toString(); break;
+            case 2: device.versionFW = value.toString(); break;
+            case 4: device.error = value.toString(); break;
+            case 5: device.group_1 = value.toString(); break;
+            case 6: device.group_2 = value.toString(); break;
+            case 7: device.group_3 = value.toString(); break;
+            case 8: device.group_4 = value.toString(); break;
+            case 9: device.hight = value.toString(); break;
+            case 10: device.tiltAngle = value.toString(); break;
+            case 11: device.tiltOnly = value.toString(); break;
+            case 12: device.dir = value.toString(); break;
+        }
+    } else if (info.deviceType == SixChannelDevice && info.deviceIndex >= 0 && info.deviceIndex < m_sixChanelData.size()) {
+        SixChanel_t &device = m_sixChanelData[info.deviceIndex];
+        Chanel_t* channel = nullptr;
+
+        switch (info.channelIndex) {
+            case 0: channel = &device.chanel_1; break;
+            case 1: channel = &device.chanel_2; break;
+            case 2: channel = &device.chanel_3; break;
+            case 3: channel = &device.chanel_4; break;
+            case 4: channel = &device.chanel_5; break;
+            case 5: channel = &device.chanel_6; break;
+        }
+
+        if (channel) {
+            // Обновляем соответствующие поля канала
+            switch (column) {
+                case 0: if (info.channelIndex == 0) device.address = value.toString(); break;
+                case 2: if (info.channelIndex == 0) device.versionFW = value.toString(); break;
+                case 3: channel->chanel = value.toString(); break;
+                case 4: channel->error = value.toString(); break;
+                case 5: channel->group_1 = value.toString(); break;
+                case 6: channel->group_2 = value.toString(); break;
+                case 7: channel->group_3 = value.toString(); break;
+                case 8: channel->group_4 = value.toString(); break;
+                case 9: channel->hight = value.toString(); break;
+                case 10: channel->endangle = value.toString(); break;
+                case 11: channel->tiltOnly = value.toString(); break;
+                case 12: channel->dir = value.toString(); break;
+            }
+        }
+    }
 
     // Уведомляем об изменении конкретной строки
     QModelIndex modelIndex = createIndex(row, 0);

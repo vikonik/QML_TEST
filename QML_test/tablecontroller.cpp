@@ -22,50 +22,114 @@ void TableController::setDataParser(DataParser *dataParser)
 
 void TableController::processRow(int rowIndex)
 {
-    if (!m_dataParser) {
-        qWarning() << "DataParser is not set!";
+    if (!m_dataParser || !m_model) {
+        qWarning() << "DataParser or Model is not set!";
         return;
     }
 
     // Сохраняем выбранную строку
     setSelectedRow(rowIndex);
 
-    // Получаем полные данные из DataParser
-    QVector<OneChanel_t> devices = m_dataParser->getOneChanelDevices();
+    // Получаем информацию о типе строки из модели
+    TableModel::TableRowInfo rowInfo = m_model->getRowInfo(rowIndex);
 
-    if (rowIndex < 0 || rowIndex >= devices.size()) {
-        qWarning() << "Invalid row index:" << rowIndex;
-        return;
+    if (rowInfo.deviceType == TableModel::OneChannelDevice) {
+        // Обработка одноканального устройства
+        QVector<OneChanel_t> devices = m_dataParser->getOneChanelDevices();
+
+        if (rowInfo.deviceIndex >= 0 && rowInfo.deviceIndex < devices.size()) {
+            const OneChanel_t &device = devices[rowInfo.deviceIndex];
+
+            // Извлекаем нужные данные
+            m_serialText = device.address;
+            m_minAngleText = device.tiltAngle;
+            m_typeText = device.versionFW;
+
+            // Форматируем дату
+            QString formattedDay = device.day.length() == 1 ? "0" + device.day : device.day;
+            QString formattedMonth = device.month.length() == 1 ? "0" + device.month : device.month;
+
+            // Берем последние две цифры года
+            QString formattedYear = device.year;
+            if (device.year.length() >= 2) {
+                formattedYear = device.year.right(2);
+            } else if (device.year.length() == 1) {
+                formattedYear = "0" + device.year;
+            }
+
+            // Собираем итоговую строку даты
+            m_activationDateText = QString("%1.%2.%3")
+                .arg(formattedDay)
+                .arg(formattedMonth)
+                .arg(formattedYear);
+        } else {
+            qWarning() << "Invalid device index for OneChannelDevice:" << rowInfo.deviceIndex;
+            resetDisplayValues();
+        }
+    } else if (rowInfo.deviceType == TableModel::SixChannelDevice) {
+        // Обработка многоканального устройства
+        QVector<SixChanel_t> devices = m_dataParser->getSixChanelDevices();
+
+        if (rowInfo.deviceIndex >= 0 && rowInfo.deviceIndex < devices.size()) {
+            const SixChanel_t &device = devices[rowInfo.deviceIndex];
+
+            // Заполняем данные устройства
+            m_serialText = device.address;
+            m_typeText = device.versionFW;
+
+            // Форматирование даты
+            QString formattedDay = device.day.length() == 1 ? "0" + device.day : device.day;
+            QString formattedMonth = device.month.length() == 1 ? "0" + device.month : device.month;
+            QString formattedYear = device.year.right(2);
+
+            m_activationDateText = QString("%1.%2.%3")
+                .arg(formattedDay)
+                .arg(formattedMonth)
+                .arg(formattedYear);
+
+            // Для многоканальных устройств minAngle может быть не применим
+            // Можно использовать значение из первого канала или оставить N/A
+            m_minAngleText = "N/A";
+
+            // Если нужно использовать значение из конкретного канала:
+            /*
+            if (rowInfo.channelIndex >= 0 && rowInfo.channelIndex < 6) {
+                const Chanel_t* channel = nullptr;
+                switch (rowInfo.channelIndex) {
+                    case 0: channel = &device.chanel_1; break;
+                    case 1: channel = &device.chanel_2; break;
+                    case 2: channel = &device.chanel_3; break;
+                    case 3: channel = &device.chanel_4; break;
+                    case 4: channel = &device.chanel_5; break;
+                    case 5: channel = &device.chanel_6; break;
+                }
+
+                if (channel) {
+                    m_minAngleText = channel->endangle;
+                }
+            }
+            */
+        } else {
+            qWarning() << "Invalid device index for SixChannelDevice:" << rowInfo.deviceIndex;
+            resetDisplayValues();
+        }
+    } else {
+        qWarning() << "Unknown device type for row:" << rowIndex;
+        resetDisplayValues();
     }
-
-    const OneChanel_t &device = devices[rowIndex];
-
-    // Извлекаем нужные данные
-    m_serialText = device.address;
-    m_minAngleText = device.tiltAngle;
-    m_typeText = device.versionFW;
-
-    // Форматируем дату
-    QString formattedDay = device.day.length() == 1 ? "0" + device.day : device.day;
-    QString formattedMonth = device.month.length() == 1 ? "0" + device.month : device.month;
-
-    // Берем последние две цифры года
-    QString formattedYear = device.year;
-    if (device.year.length() >= 2) {
-        formattedYear = device.year.right(2);
-    } else if (device.year.length() == 1) {
-        formattedYear = "0" + device.year;
-    }
-
-    // Собираем итоговую строку даты
-    m_activationDateText = QString("%1.%2.%3")
-        .arg(formattedDay)
-        .arg(formattedMonth)
-        .arg(formattedYear);
 
     // Уведомляем об изменении данных
     emit dataProcessed();
-    qDebug()<<"processRow complite" << m_serialText << "row index:" << rowIndex;
+    qDebug() << "processRow complete" << m_serialText << "row index:" << rowIndex;
+}
+
+// Вспомогательный метод для сброса значений отображения
+void TableController::resetDisplayValues()
+{
+    m_serialText = "";
+    m_minAngleText = "";
+    m_typeText = "";
+    m_activationDateText = "";
 }
 
 /*

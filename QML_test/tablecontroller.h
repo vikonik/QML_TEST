@@ -50,6 +50,7 @@ private:
     QString m_minAngleText;
     QString m_typeText;
     QString m_activationDateText;
+    void resetDisplayValues();
 };
 
 

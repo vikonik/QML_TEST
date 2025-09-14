@@ -1,3 +1,6 @@
+#ifndef TABLEMODEL_H
+#define TABLEMODEL_H
+
 #include <QAbstractListModel>
 #include <QList>
 #include <QVariant>
@@ -16,6 +19,19 @@ public:
     // Роли для доступа к данным
     enum Roles {
         RowDataRole = Qt::UserRole + 1
+    };
+
+    // Типы устройств
+    enum DeviceType {
+        OneChannelDevice,
+        SixChannelDevice
+    };
+
+    // Структура для хранения информации о строке
+    struct TableRowInfo {
+        DeviceType deviceType;
+        int deviceIndex;
+        int channelIndex; // Для многоканальных устройств
     };
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -39,15 +55,31 @@ public:
     void setModelData(const QList<QList<QVariant>> &newData);
 
     Q_INVOKABLE QString getRowIcon(int row, bool isSelected) const;
-    QVector<OneChanel_t> getFullData() const;
-public slots:
+    QVector<OneChanel_t> getOneChanelData() const;
+    QVector<SixChanel_t> getSixChanelData() const;
 
-    void loadDeviceData(const QVector<OneChanel_t> &data);
+    // Новые методы для работы с обоими типами устройств
+    void addOneChanelDevice(const OneChanel_t &device);
+    void addSixChanelDevice(const SixChanel_t &device);
+    TableRowInfo getRowInfo(int row) const;
+
+public slots:
+    void loadOneChanelData(const QVector<OneChanel_t> &data);
+    void loadSixChanelData(const QVector<SixChanel_t> &data);
+
 signals:
     void editableColumnsChanged();
 
 private:
     QList<QList<QVariant>> m_data;
     QList<int> m_editableColumns; // Индексы редактируемых столбцов
-     QVector<OneChanel_t> m_fullData; // Для хранения полных данных
+
+    // Для хранения полных данных обоих типов
+    QVector<OneChanel_t> m_oneChanelData;
+    QVector<SixChanel_t> m_sixChanelData;
+    QVector<TableRowInfo> m_rowInfo; // Информация о типах строк
+
+    void rebuildTableData();
 };
+
+#endif // TABLEMODEL_H
