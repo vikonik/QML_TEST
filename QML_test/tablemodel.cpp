@@ -2,6 +2,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <algorithm>
 #include "dataStruct.h"
 
 TableModel::TableModel(QObject *parent) : QAbstractListModel(parent) {}
@@ -96,9 +97,10 @@ void TableModel::loadCSV(const QString &filePath) {
 void TableModel::loadOneChanelData(const QVector<OneChanel_t>& data){
     beginResetModel();
     m_oneChanelData = data;
-    m_sixChanelData.clear();
+    //m_sixChanelData.clear();
     rebuildTableData();
     endResetModel();
+    qDebug() << "Loading one channel data, devices count:" << data.size();
 }
 
 /*
@@ -107,9 +109,11 @@ void TableModel::loadOneChanelData(const QVector<OneChanel_t>& data){
 void TableModel::loadSixChanelData(const QVector<SixChanel_t>& data){
     beginResetModel();
     m_sixChanelData = data;
-    m_oneChanelData.clear();
+    //m_oneChanelData.clear();
     rebuildTableData();
     endResetModel();
+    qDebug() << "Rebuilding table, one channel devices:" << m_oneChanelData.size()
+             << ", six channel devices:" << m_sixChanelData.size();
 }
 
 /*
@@ -162,9 +166,13 @@ void TableModel::addSixChanelDevice(const SixChanel_t &device) {
 Перестраиваем табличные данные на основе сохраненных устройств
 */
 void TableModel::rebuildTableData() {
-    beginResetModel();
+    // Важно: НЕ вызываем beginResetModel/endResetModel здесь, так как они уже вызываются в вызывающих методах
     m_data.clear();
     m_rowInfo.clear();
+
+    // СОРТИРОВКА: Сортируем оба вектора устройств по адресу перед отображением
+    std::sort(m_oneChanelData.begin(), m_oneChanelData.end());
+    std::sort(m_sixChanelData.begin(), m_sixChanelData.end());
 
     // Добавляем одноканальные устройства
     for (int i = 0; i < m_oneChanelData.size(); ++i) {
@@ -241,7 +249,6 @@ void TableModel::rebuildTableData() {
         }
     }
 
-    endResetModel();
     qDebug() << "Rebuilt table with" << m_data.size() << "rows";
 }
 

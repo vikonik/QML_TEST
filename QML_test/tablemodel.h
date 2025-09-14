@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <algorithm>
 #include "dataStruct.h"
 
 class TableModel : public QAbstractListModel {

@@ -2,12 +2,9 @@
 #define TABLECONTROLLER_H
 
 #include <QObject>
-// TableController.h
-#include <QObject>
 #include <QModelIndex>
 #include "dataparser.h"
-// Предварительное объявление класса
-class TableModel;
+#include "tablemodel.h"
 
 class TableController : public QObject
 {
@@ -50,8 +47,8 @@ private:
     QString m_minAngleText;
     QString m_typeText;
     QString m_activationDateText;
+
     void resetDisplayValues();
 };
-
 
 #endif // TABLECONTROLLER_H

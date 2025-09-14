@@ -53,30 +53,36 @@ MainLogick::~MainLogick()
 /*
 Настраиваем connect
 */
+// В методе setConnect() замените соединения:
 void MainLogick::setConnect(){
     connect(buttonHandler, &ButtonHandler::signalConnect, this, &MainLogick::openPort);
     connect(buttonHandler, &ButtonHandler::signalDisconnect, serial, &Serial::closePort);
     connect(buttonHandler, &ButtonHandler::signalSkanID,this, &MainLogick::scanNet);
-    //connect(this, SIGNAL(signalSendData(QByteArray*)), serial, SLOT(sendData(QByteArray*)));
-//connect(this, SIGNAL(signalSendData(const QByteArray*)), serial, SLOT(sendData(const QByteArray*)));
 
     connect(this, &MainLogick::signalSendData,
             serial,
             static_cast<bool (Serial::*)(const QByteArray &)>(&Serial::sendData));
-    connect(serial, &Serial::rawDataReceived, dataParser, &DataParser::processRawData);
-  //  connect(dataParser, &DataParser::devicesUpdated, tableModel, &TableModel::loadDeviceData);
 
+    connect(serial, &Serial::rawDataReceived, dataParser, &DataParser::processRawData);
+
+    // Временно вернем старые соединения для отладки
 //    connect(dataParser, &DataParser::devicesUpdated, this, [this](){
-//        tableModel->loadDeviceData(dataParser->getOneChanelDevices());//Данные для обработки по клику на строку брать не из строки а отсюда
+//        tableModel->loadOneChanelData(dataParser->getOneChanelDevices());
+//        //tableModel->loadSixChanelData(dataParser->getSixChanelDevices());
+
 //    });
 
-//    // Добавляем соединение для обработки полученных данных
-//    connect(serial, &Serial::dataReceived, this, &MainLogick::detectDeviceType);
-    // Подключаем сигналы от DataParser к TableModel
-    connect(dataParser, &DataParser::oneChanelDataReceived,
-            tableModel, &TableModel::addOneChanelDevice);
-    connect(dataParser, &DataParser::sixChanelDataReceived,
-            tableModel, &TableModel::addSixChanelDevice);
+    // Для отладки добавим соединения для шестиканальных устройств
+    connect(dataParser, &DataParser::sixChanelDataReceived, this, [this](const SixChanel_t &data){
+        // Пока просто логируем получение шестиканального устройства
+        tableModel->loadSixChanelData(dataParser->getSixChanelDevices());
+        qDebug() << "Received six channel device:" << data.address;
+    });
+    connect(dataParser, &DataParser::oneChanelDataReceived, this, [this](const OneChanel_t &data){
+        // Пока просто логируем получение шестиканального устройства
+        tableModel->loadOneChanelData(dataParser->getOneChanelDevices());
+        qDebug() << "Received one channel device:" << data.address;
+    });
 
 }
 

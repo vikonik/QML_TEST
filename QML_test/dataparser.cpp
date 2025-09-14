@@ -253,9 +253,9 @@ void DataParser::updateDeviceArrays() {
     // Отправляем сигнал об обновлении
     emit devicesUpdated();
 
-//    qDebug() << "Массивы устройств обновлены и отсортированы";
-//    qDebug() << "Одноканальных устройств:" << m_oneChanelDevices.size();
-//    qDebug() << "Шестиканальных устройств:" << m_sixChanelDevices.size();
+    qDebug() << "Массивы устройств обновлены и отсортированы";
+    qDebug() << "Одноканальных устройств:" << m_oneChanelDevices.size();
+    qDebug() << "Шестиканальных устройств:" << m_sixChanelDevices.size();
 }
 
 QVector<OneChanel_t> DataParser::getOneChanelDevices() const {

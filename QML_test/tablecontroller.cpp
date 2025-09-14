@@ -1,4 +1,3 @@
-// TableController.cpp
 #include "tablecontroller.h"
 #include "tablemodel.h"
 #include <QDebug>
@@ -88,27 +87,7 @@ void TableController::processRow(int rowIndex)
                 .arg(formattedYear);
 
             // Для многоканальных устройств minAngle может быть не применим
-            // Можно использовать значение из первого канала или оставить N/A
             m_minAngleText = "N/A";
-
-            // Если нужно использовать значение из конкретного канала:
-            /*
-            if (rowInfo.channelIndex >= 0 && rowInfo.channelIndex < 6) {
-                const Chanel_t* channel = nullptr;
-                switch (rowInfo.channelIndex) {
-                    case 0: channel = &device.chanel_1; break;
-                    case 1: channel = &device.chanel_2; break;
-                    case 2: channel = &device.chanel_3; break;
-                    case 3: channel = &device.chanel_4; break;
-                    case 4: channel = &device.chanel_5; break;
-                    case 5: channel = &device.chanel_6; break;
-                }
-
-                if (channel) {
-                    m_minAngleText = channel->endangle;
-                }
-            }
-            */
         } else {
             qWarning() << "Invalid device index for SixChannelDevice:" << rowInfo.deviceIndex;
             resetDisplayValues();
@@ -123,15 +102,6 @@ void TableController::processRow(int rowIndex)
     qDebug() << "processRow complete" << m_serialText << "row index:" << rowIndex;
 }
 
-// Вспомогательный метод для сброса значений отображения
-void TableController::resetDisplayValues()
-{
-    m_serialText = "";
-    m_minAngleText = "";
-    m_typeText = "";
-    m_activationDateText = "";
-}
-
 /*
 Обновляем таблицу при изменении serialID
 */
@@ -142,19 +112,28 @@ void TableController::updateSerialValue(const QString &newValue)
            return;
        }
 
-    // Получаем текущие данные
+    // Получаем информацию о типе строки
+    TableModel::TableRowInfo rowInfo = m_model->getRowInfo(m_selectedRow);
+
+    if (rowInfo.deviceType == TableModel::OneChannelDevice) {
+        // Обновление одноканального устройства
         QVector<OneChanel_t> devices = m_dataParser->getOneChanelDevices();
 
-    if (m_selectedRow < 0) {
-        qWarning() << "Cannot update serial value: no row selected";
-        return;
-    }
+        if (rowInfo.deviceIndex >= 0 && rowInfo.deviceIndex < devices.size()) {
+            // Обновляем исходные данные
+            devices[rowInfo.deviceIndex].address = newValue;
+            m_dataParser->setOneChanelDevices(devices);
+        }
+    } else if (rowInfo.deviceType == TableModel::SixChannelDevice) {
+        // Обновление шестиканального устройства
+        QVector<SixChanel_t> devices = m_dataParser->getSixChanelDevices();
 
-    if (m_selectedRow < devices.size()) {
-        // Обновляем исходные данные
-        devices[m_selectedRow].address = newValue;
-        // Здесь нужно добавить метод в DataParser для обновления устройств,
-        m_dataParser->setOneChanelDevices(devices);
+        if (rowInfo.deviceIndex >= 0 && rowInfo.deviceIndex < devices.size()) {
+            // Обновляем исходные данные (только для первого канала)
+            devices[rowInfo.deviceIndex].address = newValue;
+            // Здесь нужно добавить метод в DataParser для обновления шестиканальных устройств
+            // m_dataParser->setSixChanelDevices(devices);
+        }
     }
 
     // Обновляем значение в модели
@@ -180,6 +159,7 @@ void TableController::setSelectedRow(int row)
         emit selectedRowChanged();
     }
 }
+
 // Реализация геттеров
 QString TableController::serialText() const {
      qDebug() << "serialText m_serialText " << m_serialText;
@@ -188,3 +168,12 @@ QString TableController::serialText() const {
 QString TableController::minAngleText() const { return m_minAngleText; }
 QString TableController::typeText() const { return m_typeText; }
 QString TableController::activationDateText() const { return m_activationDateText; }
+
+// Вспомогательный метод для сброса значений отображения
+void TableController::resetDisplayValues()
+{
+    m_serialText = "";
+    m_minAngleText = "";
+    m_typeText = "";
+    m_activationDateText = "";
+}
