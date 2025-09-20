@@ -143,6 +143,9 @@ void TableController::updateSerialValue(const QString &newValue)
     m_serialText = newValue;
     emit dataProcessed();
 
+    m_model->resortTable();
+
+
     qDebug() << "Updated serial value to:" << newValue << "for row:" << m_selectedRow << "m_serialText " << m_serialText;
 }
 

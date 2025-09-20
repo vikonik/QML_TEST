@@ -177,7 +177,7 @@ void TableModel::rebuildTableData() {
     // СОРТИРОВКА: Сортируем оба вектора устройств по адресу перед отображением
     std::sort(m_oneChanelData.begin(), m_oneChanelData.end());
     std::sort(m_sixChanelData.begin(), m_sixChanelData.end());
-
+qDebug() << "Сортировка rebuildTableData";
     // Добавляем одноканальные устройства
     for (int i = 0; i < m_oneChanelData.size(); ++i) {
         const OneChanel_t &device = m_oneChanelData[i];
@@ -431,4 +431,12 @@ QString TableModel::getRowIcon(int row, bool isSelected) const {
     // Дополнительная логика для разных типов строк
     if (row == 0) return "qrc:/icons/header_icon.png";
     return "qrc:/icons/row_default.png";
+}
+
+/**/
+void TableModel::resortTable(){
+    beginResetModel();
+
+rebuildTableData();
+     endResetModel();
 }
