@@ -5,7 +5,11 @@
 #include <algorithm>
 #include "dataStruct.h"
 
-TableModel::TableModel(QObject *parent) : QAbstractListModel(parent) {}
+TableModel::TableModel(QObject *parent) : QAbstractListModel(parent) {
+    // Инициализируем редактируемые колонки
+        m_editableColumns = {5, 6, 7, 8, 9, 10, 11, 12}; // Group 1-4, Height, End Angle, Tilt only, Motor revers
+
+}
 
 int TableModel::rowCount(const QModelIndex &parent) const {
     return parent.isValid() ? 0 : m_data.size();
@@ -310,7 +314,7 @@ void TableModel::setEditableColumns(const QVariantList &columns) {
 // Проверка возможности редактирования ячейки
 bool TableModel::isCellEditable(int row, int column) const {
     // Первая строка (заголовки) не редактируется
-    if (row == 0) return false;
+    //if (row == 0) return false;
 
     return (m_editableColumns.contains(column) || column == 0) &&
            row >= 0 && row < m_data.size() &&
