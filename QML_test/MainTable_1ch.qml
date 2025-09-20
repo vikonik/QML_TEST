@@ -9,6 +9,7 @@ import StyleSetting 1.0
 Rectangle {
     id: content
     anchors.fill: parent
+
     color: "transparent"
     // Массив ширины колонок (пример значений)
     //   property var columnWidths: [75, 75, 50, 80]
@@ -51,7 +52,7 @@ Rectangle {
         anchors.fill: parent
         model: tableModel
         spacing: 0
-
+interactive: false // ДОБАВЛЕНО: Запрещаем взаимодействие с ListView
         property int selectedRow: -1
 
         delegate: Rectangle {
