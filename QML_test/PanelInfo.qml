@@ -93,6 +93,12 @@ Rectangle{
                 //background: null                 // прозрачный фон, если нужен
                 // Обработка нажатия Enter
                 onAccepted: {
+                    // Нормализуем значение перед отправкой
+                    let num = parseInt(text, 10);
+                    if (isNaN(num)) num = 0;
+                    num = Math.max(0, Math.min(9999, num));
+                    let padded = ("0000" + num).slice(-4);  // дополняем нулями до 4-х символов
+                    text = padded;
                     // Вызываем метод контроллера для обновления значения
                     tableController.updateSerialValue(text)
                 }
@@ -100,6 +106,8 @@ Rectangle{
                 // Обновляем свойство при изменении текста
                 onTextChanged: {
                     //serialText = text
+                    // Можно сразу ограничивать ввод только цифрами (удаляем лишние символы)
+                    text = text.replace(/\D/g, "");
                 }
             }
 
