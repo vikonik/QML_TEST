@@ -180,3 +180,22 @@ void TableController::resetDisplayValues()
     m_typeText = "";
     m_activationDateText = "";
 }
+
+/**/
+void TableController::updateCellsInRange(int startRow, int startCol, int endRow, int endCol, const QString &value)
+{
+    if (!m_model) return;
+
+    int minRow = qMin(startRow, endRow);
+    int maxRow = qMax(startRow, endRow);
+    int minCol = qMin(startCol, endCol);
+    int maxCol = qMax(startCol, endCol);
+
+    for (int row = minRow; row <= maxRow; ++row) {
+        for (int col = minCol; col <= maxCol; ++col) {
+            if (col >= 5 && col <= 8) { // Только столбцы 5-8
+                m_model->updateCell(row, col, value);
+            }
+        }
+    }
+}

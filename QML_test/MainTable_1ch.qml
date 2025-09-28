@@ -11,10 +11,14 @@ Rectangle {
     anchors.fill: parent
 
     color: "transparent"
-    // Массив ширины колонок (пример значений)
-    //   property var columnWidths: [75, 75, 50, 80]
 
     signal rowSelected(int rowIndex)// Сигнал для передачи индекса выбранной строки
+    property bool isDragging: false
+    property int dragStartRow: -1
+    property int dragStartColumn: -1
+    property string dragValue: ""
+    property var selectedCells: []
+    property var currentHoverCell: null
 
     property var columnWidths: [
         { name: "Serial ID", width: 75 },
@@ -46,14 +50,127 @@ Rectangle {
         return "";
     }
 
+    // Функция для определения ячейки по координатам
+    function getCellAt(x, y) {
+        // Преобразуем координаты в индексы строки и столбца
+        var row = Math.floor(y / 30); // Высота строки 30px
+        if (row < 0 || row >= rowView.count) return null;
+
+        // Определяем столбец
+        var colX = x - 30; // Вычитаем ширину иконки
+        if (colX < 0) return null;
+
+        var totalWidth = 0;
+        for (var i = 0; i < columnWidths.length; i++) {
+            var colWidth = getColumnWidth(columnWidths, i);
+            if (colX < totalWidth + colWidth) {
+                return {row: row, column: i};
+            }
+            totalWidth += colWidth;
+        }
+
+        return null;
+    }
+
+    // Функция для обработки перетаскивания
+    function handleDrag(row, column) {
+        if (!isDragging) return;
+
+        // Обновляем текущую ячейку под курсором
+        currentHoverCell = {row: row, column: column};
+
+        // Определяем диапазон строк и столбцов
+        var startRow = Math.min(dragStartRow, row);
+        var endRow = Math.max(dragStartRow, row);
+        var startCol = Math.min(dragStartColumn, column);
+        var endCol = Math.max(dragStartColumn, column);
+
+        // Заполняем массив выбранных ячеек
+        selectedCells = [];
+        for (var r = startRow; r <= endRow; r++) {
+            for (var c = startCol; c <= endCol; c++) {
+                if (c >= 5 && c <= 8) { // Только столбцы 5-8 (Group 1-4)
+                    selectedCells.push({row: r, column: c});
+
+                    // Обновляем значение ячейки
+                    if (tableModel) {
+                        tableModel.updateCell(r, c, dragValue);
+                    }
+                }
+            }
+        }
+    }
+
+    // Функция для завершения перетаскивания
+    function endDrag() {
+        isDragging = false;
+        selectedCells = [];
+        currentHoverCell = null;
+    }
 
     ListView {
         id: rowView
         anchors.fill: parent
         model: tableModel
         spacing: 0
-interactive: false // ДОБАВЛЕНО: Запрещаем взаимодействие с ListView
+        interactive: false
         property int selectedRow: -1
+
+        // Главный MouseArea для перетаскивания - теперь внутри ListView
+        MouseArea {
+            id: dragMouseArea
+            anchors.fill: parent
+            hoverEnabled: true
+            acceptedButtons: Qt.LeftButton
+            propagateComposedEvents: true
+
+            onPressed: {
+                var cell = getCellAt(mouseX, mouseY);
+                if (cell && mouse.modifiers & Qt.ControlModifier && cell.column >= 5 && cell.column <= 8) {
+                    // Начинаем перетаскивание
+                    content.isDragging = true;
+                    content.dragStartRow = cell.row;
+                    content.dragStartColumn = cell.column;
+
+                    // Получаем значение из модели
+                    var modelIndex = tableModel.index(cell.row, 0);
+                    var rowData = tableModel.data(modelIndex, TableModel.RowDataRole);
+                    if (rowData && rowData.length > cell.column) {
+                        content.dragValue = rowData[cell.column];
+                    }
+
+                    // Обрабатываем начальную ячейку
+                    handleDrag(cell.row, cell.column);
+
+                    // Перехватываем событие
+                    mouse.accepted = true;
+                } else {
+                    // Пропускаем событие дальше
+                    mouse.accepted = false;
+                }
+            }
+
+            onPositionChanged: {
+                if (isDragging) {
+                    var cell = getCellAt(mouseX, mouseY);
+                    if (cell) {
+                        handleDrag(cell.row, cell.column);
+                    }
+                    mouse.accepted = true;
+                } else {
+                    mouse.accepted = false;
+                }
+            }
+
+            onReleased: {
+                if (isDragging) {
+                    endDrag();
+                    mouse.accepted = true;
+                } else {
+                    mouse.accepted = false;
+                }
+            }
+        }
 
         delegate: Rectangle {
             id: rowDelegate
@@ -64,7 +181,7 @@ interactive: false // ДОБАВЛЕНО: Запрещаем взаимодей�
             property bool isSelected: rowView.selectedRow === rowIndex
 
             color: isSelected ? Style.selectedRowColor : (rowIndex % 2 === 0 ? Style.rowEvenColor : Style.rowOddColor)
-            //color: isSelected ? "red" : "green"
+
             // Иконка в начале строки
             Rectangle {
                 width: 30
@@ -83,7 +200,8 @@ interactive: false // ДОБАВЛЕНО: Запрещаем взаимодей�
                     anchors.fill: parent
                     onClicked: {
                         rowView.selectedRow = rowIndex;
-                        content.rowSelected(rowIndex); // Испускаем сигнал
+                        content.rowSelected(rowIndex);
+                        tableController.processRow(rowIndex);
                     }
                 }
             }
@@ -102,16 +220,9 @@ interactive: false // ДОБАВЛЕНО: Запрещаем взаимодей�
 
                     delegate: Rectangle {
                         id: cellDelegate
-                        // Используем ширину из массива, если он определен и имеет достаточную длину
-                        //                        width: (content.columnWidths && content.columnWidths.length > model.index) ?
-                        //                               content.columnWidths[model.index] : 75
                         width: getColumnWidth(columnWidths, model.index)
-
                         height: parent.height
                         color: "transparent"
-                        //color: "blue"
-                        //border.color: "blue"
-                        //border.width: 1
 
                         // Добавляем правую границу для ячейки с индексом 4
                         Rectangle {
@@ -130,36 +241,51 @@ interactive: false // ДОБАВЛЕНО: Запрещаем взаимодей�
                                                 columnName === "Group 3" || columnName === "Group 4" ||
                                                 columnName === "Height"|| columnName === "End Angle"
 
+                        // Визуальное выделение при перетаскивании
+                        Rectangle {
+                            anchors.fill: parent
+                            color: {
+                                if (!content.isDragging) return "transparent";
+
+                                // Проверяем, находится ли ячейка в выбранном диапазоне
+                                for (var i = 0; i < content.selectedCells.length; i++) {
+                                    var cell = content.selectedCells[i];
+                                    if (cell.row === actualRowIndex && cell.column === columnIndex) {
+                                        return Qt.rgba(0, 1, 0, 0.3); // Зеленый с прозрачностью
+                                    }
+                                }
+
+                                return "transparent";
+                            }
+                        }
+
                         // Область для выбора строки
                         MouseArea {
                             anchors.fill: parent
+                            hoverEnabled: true
                             acceptedButtons: Qt.LeftButton
+                            propagateComposedEvents: true
+
                             onClicked: {
-                                rowView.selectedRow = rowIndex
-                                //content.rowSelected(rowIndex); // Испускаем сигнал
+                                rowView.selectedRow = rowIndex;
                                 tableController.processRow(rowIndex);
-                                rowView.selectedRow = rowIndex
-                                tableController.processRow(rowIndex);
+                                mouse.accepted = false; // Пропускаем событие дальше
                             }
+
                             onDoubleClicked: {
                                 console.log("Double Click")
                                 if (cellDelegate.editable && !textInput.visible) {
                                     startEditing()
                                 }
+                                mouse.accepted = false; // Пропускаем событие дальше
                             }
-                            //                            onDragChanged: {
-                            //                            console.log("onDragChanged")
-                            //                            }
                         }
 
-                        Rectangle{//Для отрисовки границ
+                        Rectangle {//Для отрисовки границ
                             width: getColumnWidth(columnWidths, index)
                             height: parent.height
-                            //border.color: "transparent"
-                            // border.color: columnIndex === 3 ? Style.specialBorderColor : "transparent"
                             border.width: 1
                             color: "transparent"
-                            //color: columnIndex === 3 ? Style.specialBorderColor : Style.defaultBorderColor
 
                             Row {
                                 id: imageTextRow
@@ -168,20 +294,14 @@ interactive: false // ДОБАВЛЕНО: Запрещаем взаимодей�
                                     left: parent.left
                                     leftMargin: 10
                                     right: parent.right
-
-
-
                                 }
-                                //   spacing: 10
                                 visible:  (columnName === "Group 1" || columnName === "Group 2" ||
                                            columnName === "Group 3" || columnName === "Group 4" ||
-                                           /*columnName === "Height"  ||*/ columnName === "End Angle" ||
-                                           /*columnName === "Tilt" ||*/ columnName === "Error") && !textInput.visible
+                                           columnName === "End Angle" || columnName === "Error") && !textInput.visible
 
                                 //изображение и текст
                                 Image {
                                     id: cellIcon
-                                    // width: 16
                                     height: 16
                                     source: {
                                         if(columnName === "End Angle")
@@ -192,7 +312,6 @@ interactive: false // ДОБАВЛЕНО: Запрещаем взаимодей�
                                             return "qrc:/Image/iconGroup.png";
                                         else
                                             return "";
-
                                     }
                                     anchors.verticalCenter: parent.verticalCenter
                                     visible: source !== ""
@@ -204,7 +323,6 @@ interactive: false // ДОБАВЛЕНО: Запрещаем взаимодей�
                                     color: Style.buttonDefaultTextrColor
                                     font.pixelSize: Style.fontSizeLabel
                                     horizontalAlignment: columnName === "Serial ID" ? Text.AlignLeft : Text.AlignHCenter
-
                                 }
                             }
                         }
@@ -214,17 +332,12 @@ interactive: false // ДОБАВЛЕНО: Запрещаем взаимодей�
                             id: customCheckBoxTable
                             anchors.centerIn: parent
                             visible:  (columnName === "Tilt only" ||  columnName === "Motor revers" )&& !textInput.visible
-                            checked: modelData === "1" || modelData === "true" // Поддержка разных форматов
+                            checked: modelData === "1" || modelData === "true"
                             color: "transparent"
                             onToggled: {
                                 tableModel.updateCell(actualRowIndex, columnIndex, checked ? "1" : "0")
                             }
-
-//                            Component.onCompleted: {
-//                                console.log("Initial checked state:", checked, "rowData:", modelData)
-//                            }
                         }
-
 
                         // Обычный текст для других колонок
                         Text {
@@ -246,7 +359,6 @@ interactive: false // ДОБАВЛЕНО: Запрещаем взаимодей�
                             horizontalAlignment: columnName === "Serial ID" ? Text.AlignLeft : Text.AlignHCenter
                         }
 
-
                         // Поле ввода
                         TextInput {
                             id: textInput
@@ -259,7 +371,6 @@ interactive: false // ДОБАВЛЕНО: Запрещаем взаимодей�
                             visible: cellDelegate.editable && activeFocus
                             text: modelData
                             font.pixelSize: 12
-                            //  visible: false
                             clip: true
                             selectByMouse: true
 
@@ -267,10 +378,6 @@ interactive: false // ДОБАВЛЕНО: Запрещаем взаимодей�
                             onActiveFocusChanged: if (!activeFocus) finishEditing()
                             horizontalAlignment: Text.AlignHCenter
                         }
-
-        /*****************************************/
-
-        /***************************************/
 
                         function startEditing() {
                             textInput.text = modelData

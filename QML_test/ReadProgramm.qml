@@ -16,8 +16,8 @@ Rectangle{
         defaultImage: "qrc:/Image/buttonReadProgramm/buttonRead_default.png"
         hoverImage: "qrc:/Image/buttonReadProgramm/buttonRead_hover.png"
         pressedImage: "qrc:/Image/buttonReadProgramm/buttonRead_preset.png"
-
-        onClicked: console.log("Disconnect button clicked")
+        buttonId: "button_Read"
+        onClicked: console.log("button_Read clicked")
     }
 
     CustomButton {
@@ -30,7 +30,7 @@ Rectangle{
         defaultImage: "qrc:/Image/buttonReadProgramm/buttonPriogramm_default.png"
         hoverImage: "qrc:/Image/buttonReadProgramm/buttonPriogramm_hover.png"
         pressedImage: "qrc:/Image/buttonReadProgramm/buttonPriogramm_preset.png"
-
-        onClicked: console.log("Disconnect button clicked")
+        buttonId: "button_Programm"
+        onClicked: console.log("button_Programm clicked")
     }
 }

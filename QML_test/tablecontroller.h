@@ -34,6 +34,7 @@ public slots:
     void updateSerialValue(const QString &newValue);
     void setSelectedRow(int row);
 
+    void updateCellsInRange(int startRow, int startCol, int endRow, int endCol, const QString &value);
 signals:
     void dataProcessed();
     void selectedRowChanged();
