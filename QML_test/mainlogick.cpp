@@ -88,6 +88,9 @@ void MainLogick::setConnect(){
 
     connect(buttonHandler, &ButtonHandler::signalReadRequest,
             this, &MainLogick::handleReadRequest);
+
+    connect(buttonHandler, &ButtonHandler::signalProgramRequest,
+            this, &MainLogick::handleProgramRequest);
 }
 
 /**/
@@ -213,4 +216,25 @@ void MainLogick::handleReadRequest(const QString &serialId){
     command.append("?<");
     emit signalSendData(command);
 
+}
+
+/**/
+void MainLogick::handleProgramRequest(const QString &deviceData)
+{
+    qDebug() << "Получены данные для программирования:" << deviceData;
+
+    // Парсим строку с данными
+    if (deviceData.startsWith("TYPE=ONECHANNEL;")) {
+        // Обработка 1-канального устройства
+        // Парсим параметры из строки...
+    }
+    else if (deviceData.startsWith("TYPE=SIXCHANNEL;")) {
+        // Обработка 6-канального устройства
+        // Парсим параметры из строки...
+    }
+
+    // Здесь ваш код для программирования устройства
+    QByteArray command;
+    command.append(deviceData.toUtf8());
+    emit signalSendData(command);
 }

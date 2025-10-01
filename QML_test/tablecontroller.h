@@ -30,6 +30,8 @@ public:
     void setDataParser(DataParser *dataParser);
     QString getSerialIDForRow(int row) const;
 
+    TableModel* model() const { return m_model; }
+
 public slots:
     void processRow(int rowIndex);
     void updateSerialValue(const QString &newValue);

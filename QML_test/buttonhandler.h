@@ -11,7 +11,6 @@ class ButtonHandler : public QObject {
 public:
     explicit ButtonHandler(QObject *parent = nullptr);
 
-    void handleReadButton();
     void setTableController(TableController *controller);
 signals:
     void buttonClicked(const QString &buttonName);  // Сигнал, который будет отправляться
@@ -19,6 +18,7 @@ signals:
     void signalConnect();
     void signalDisconnect();
     void signalReadRequest(const QString &serialID);
+    void signalProgramRequest(const QString &deviceData);  // Измененный сигнал с QString
 
 public slots:
     void onButtonClicked(const QString &buttonId);
@@ -26,6 +26,10 @@ public slots:
 
 private:
     TableController* m_tableController;
+    void handleReadButton();
+    void handleProgramButton();
+    QString serializeOneChannelData() const;  // Сериализация 1-канального устройства
+    QString serializeSixChannelData() const;  // Сериализация 6-канального устройства
 };
 
 #endif // BUTTONHANDLER_H
