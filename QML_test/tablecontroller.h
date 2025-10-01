@@ -28,6 +28,7 @@ public:
     // Установка модели и парсера
     void setModel(TableModel *model);
     void setDataParser(DataParser *dataParser);
+    QString getSerialIDForRow(int row) const;
 
 public slots:
     void processRow(int rowIndex);
@@ -40,6 +41,9 @@ signals:
     void selectedRowChanged();
 
 private:
+    QString getSerialFromOneChannel(int deviceIndex) const;
+    QString getSerialFromSixChannel(int deviceIndex) const;
+
     TableModel *m_model;
     DataParser *m_dataParser;
     int m_selectedRow;

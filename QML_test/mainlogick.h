@@ -41,6 +41,7 @@ public slots:
     void openPort();//Фасад для функции окрытияи порта
 
     void getDeviceInfo();
+    void handleReadRequest(const QString &serialId);
 private:
 
     #define CH_1    "A"

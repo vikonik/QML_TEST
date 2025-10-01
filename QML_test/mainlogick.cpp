@@ -16,12 +16,13 @@ MainLogick::MainLogick(QObject *parent) : QObject(parent),
     rfMax = new RFMax();
     debugWindow = new Debug();
     serial = new Serial();
-    buttonHandler = new ButtonHandler();// Инициализируем ButtonHandler
     tableModel = new TableModel();
     dataParser = new DataParser(this);
     tableController = new TableController(this);
     tableController->setModel(tableModel);
     tableController->setDataParser(dataParser); // Устанавливаем связь
+    buttonHandler = new ButtonHandler();// Инициализируем ButtonHandler
+    buttonHandler->setTableController(tableController);
     deviceType.clear();
 
     // Показываем окно отладки
@@ -84,6 +85,9 @@ void MainLogick::setConnect(){
         qDebug() << "Received one channel device:" << data.address;
     });
 
+
+    connect(buttonHandler, &ButtonHandler::signalReadRequest,
+            this, &MainLogick::handleReadRequest);
 }
 
 /**/
@@ -197,5 +201,16 @@ void MainLogick::detectDeviceType(QByteArray *data){
 
 /**/
 void MainLogick::getDeviceInfo(){
+
+}
+
+/**/
+void MainLogick::handleReadRequest(const QString &serialId){
+    debugWindow->log("Read from SerialID");
+    QByteArray command;
+    command.append(">");
+    command.append(serialId);
+    command.append("?<");
+    emit signalSendData(command);
 
 }

@@ -3,21 +3,29 @@
 
 #include <QObject>
 #include <QDebug>
+#include "tablecontroller.h"
 
 class ButtonHandler : public QObject {
     Q_OBJECT
-    void print();
+
 public:
     explicit ButtonHandler(QObject *parent = nullptr);
 
+    void handleReadButton();
+    void setTableController(TableController *controller);
 signals:
     void buttonClicked(const QString &buttonName);  // Сигнал, который будет отправляться
     void signalSkanID();
     void signalConnect();
     void signalDisconnect();
+    void signalReadRequest(const QString &serialID);
 
 public slots:
     void onButtonClicked(const QString &buttonId);
+    void print();
+
+private:
+    TableController* m_tableController;
 };
 
 #endif // BUTTONHANDLER_H

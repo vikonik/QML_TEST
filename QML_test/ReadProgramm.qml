@@ -17,7 +17,12 @@ Rectangle{
         hoverImage: "qrc:/Image/buttonReadProgramm/buttonRead_hover.png"
         pressedImage: "qrc:/Image/buttonReadProgramm/buttonRead_preset.png"
         buttonId: "button_Read"
-        onClicked: console.log("button_Read clicked")
+        onClicked: {
+            console.log("button_Read clicked");
+            if (buttonHandler) {
+                buttonHandler.onButtonClicked("button_Read");
+            }
+        }
     }
 
     CustomButton {

@@ -199,3 +199,49 @@ void TableController::updateCellsInRange(int startRow, int startCol, int endRow,
         }
     }
 }
+
+/**/
+QString TableController::getSerialIDForRow(int row) const
+{
+    if (!m_model || row < 0) {
+        return QString();
+    }
+
+    TableModel::TableRowInfo rowInfo = m_model->getRowInfo(row);
+
+    if (rowInfo.deviceType == TableModel::OneChannelDevice) {
+        return getSerialFromOneChannel(rowInfo.deviceIndex);
+    } else if (rowInfo.deviceType == TableModel::SixChannelDevice) {
+        return getSerialFromSixChannel(rowInfo.deviceIndex);
+    }
+
+    return QString();
+}
+
+QString TableController::getSerialFromOneChannel(int deviceIndex) const
+{
+    if (!m_dataParser || deviceIndex < 0) {
+        return QString();
+    }
+
+    QVector<OneChanel_t> devices = m_dataParser->getOneChanelDevices();
+    if (deviceIndex >= 0 && deviceIndex < devices.size()) {
+        return devices[deviceIndex].address;
+    }
+
+    return QString();
+}
+
+QString TableController::getSerialFromSixChannel(int deviceIndex) const
+{
+    if (!m_dataParser || deviceIndex < 0) {
+        return QString();
+    }
+
+    QVector<SixChanel_t> devices = m_dataParser->getSixChanelDevices();
+    if (deviceIndex >= 0 && deviceIndex < devices.size()) {
+        return devices[deviceIndex].address;
+    }
+
+    return QString();
+}

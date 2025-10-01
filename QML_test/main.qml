@@ -345,6 +345,7 @@ anchors.leftMargin: 10
             ReadProgramm{
                 x:17
                 y:347 - titleBar.height
+                //buttonHandler: buttonHandlerInstance
 
             }
 
