@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         buttonhandler.cpp \
         comboboxmodel.cpp \
+        dataStruct.cpp \
         dataparser.cpp \
         debug.cpp \
         main.cpp \
