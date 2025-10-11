@@ -175,6 +175,7 @@ int TableController::selectedRow() const
 
 void TableController::setSelectedRow(int row)
 {
+    qDebug() << "Выбрана строка";
     if (m_selectedRow != row) {
         m_selectedRow = row;
         emit selectedRowChanged();

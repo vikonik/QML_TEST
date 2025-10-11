@@ -16,6 +16,14 @@ Item {
     property string minAngleText: tableController.minAngleText
     property string typeText: tableController.typeText
     property string activationDateText: tableController.activationDateText
+
+    // Следим за изменением serialText извне
+    onSerialTextChanged: {
+        // Если поле не в режиме редактирования, обновляем текст
+        if (!serial_ID.activeFocus) {
+            serial_ID.text = serialText
+        }
+    }
   //  color: "transparent"
 Rectangle{
     id: rowText_1
@@ -89,8 +97,16 @@ Rectangle{
                 //focus: true                     // автоматически ставит фокус (по желанию)
                 selectByMouse: true             // позволяет выделять текст мышью
                 cursorVisible: true             // видимый курсор
-                inputMethodHints: Qt.ImhNone    // можно менять для цифр, паролей и т.д.
+                inputMethodHints: Qt.ImhDigitsOnly     // можно менять для цифр, паролей и т.д.
                 //background: null                 // прозрачный фон, если нужен
+
+                // При потере фокуса сохраняем значение
+                onActiveFocusChanged: {
+                    if (!activeFocus) {
+                        finishEditing()
+                    }
+                }
+
                 // Обработка нажатия Enter
                 onAccepted: {
                     // Нормализуем значение перед отправкой

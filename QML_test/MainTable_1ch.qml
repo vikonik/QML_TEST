@@ -202,6 +202,7 @@ Rectangle {
                         rowView.selectedRow = rowIndex;
                         content.rowSelected(rowIndex);
                         tableController.processRow(rowIndex);
+                        console.log("qwe_1");
                     }
                 }
             }
@@ -270,6 +271,7 @@ Rectangle {
                                 rowView.selectedRow = rowIndex;
                                 tableController.processRow(rowIndex);
                                 mouse.accepted = false; // Пропускаем событие дальше
+                                console.log("qwe_2");
                             }
 
                             onDoubleClicked: {

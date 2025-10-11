@@ -423,6 +423,8 @@ anchors.leftMargin: 10
                     onRowSelected: {
                         // Передаем индекс строки в контроллер
                         tableController.processRow(rowIndex)
+                        console.log("qwe_3");
+
                     }
                 }
 
