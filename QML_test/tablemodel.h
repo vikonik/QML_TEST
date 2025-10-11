@@ -67,6 +67,9 @@ public:
     void rebuildTableData();
 
     void resortTable();
+
+
+
 public slots:
     void loadOneChanelData(const QVector<OneChanel_t> &data);
     void loadSixChanelData(const QVector<SixChanel_t> &data);
@@ -84,6 +87,7 @@ private:
     QVector<TableRowInfo> m_rowInfo; // Информация о типах строк
 
     //void rebuildTableData();
+
 };
 
 #endif // TABLEMODEL_H

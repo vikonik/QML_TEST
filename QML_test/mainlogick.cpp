@@ -6,6 +6,7 @@
 #include <QObject> // Это важно для работы с сигналами и слотами
 #include "comboboxmodel.h"
 #include "buttonhandler.h"
+#include <QMessageBox>
 
 MainLogick::MainLogick(QObject *parent) : QObject(parent),
     comboBoxModel()
@@ -91,6 +92,13 @@ void MainLogick::setConnect(){
 
     connect(buttonHandler, &ButtonHandler::signalProgramRequest,
             this, &MainLogick::handleProgramRequest);
+
+    connect(buttonHandler, &ButtonHandler::signalLoadFromFile,
+            this, &MainLogick::handleLoadFromFile);
+
+    connect(buttonHandler, &ButtonHandler::signalSendData,
+            serial,
+            static_cast<bool (Serial::*)(const QByteArray &)>(&Serial::sendData));
 }
 
 /**/
@@ -237,4 +245,20 @@ void MainLogick::handleProgramRequest(const QString &deviceData)
     QByteArray command;
     command.append(deviceData.toUtf8());
     emit signalSendData(command);
+}
+
+
+/**/
+void MainLogick::handleLoadFromFile(const QString &filePath)
+{
+    //    if (tableModel) {
+
+    //        bool success = tableModel->loadDataFromFile(filePath);
+    ////        if (success) {
+    ////            QMessageBox::information(this, "Успех", "Данные успешно загружены из файла");
+    ////      // QMessageBox::information();
+    ////        } else {
+    ////            QMessageBox::warning(this, "Ошибка", "Не удалось загрузить данные из файла");
+    ////        }
+    //    }
 }

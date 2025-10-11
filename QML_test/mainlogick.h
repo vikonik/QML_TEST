@@ -43,6 +43,7 @@ public slots:
     void getDeviceInfo();
     void handleReadRequest(const QString &serialId);
     void handleProgramRequest(const QString &deviceData);
+    void handleLoadFromFile(const QString &filePath);
 private:
 
     #define CH_1    "A"

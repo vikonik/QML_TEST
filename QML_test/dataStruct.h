@@ -28,8 +28,6 @@ struct Chanel_t {
 };
 
 
-
-
 // Структура для шестиканального устройства
 struct SixChanel_t {
     QString address;       // 4
@@ -205,4 +203,9 @@ struct OneChanelToDevice_t {
     }
 };
 
+extern OneChanelToDevice_t oneChanelDefaulsSetting;
+extern SixChanelToDevice_t sixChanelDefaulsSetting;
+
+extern OneChanelToDevice_t oneChanelCopySetting;
+extern SixChanelToDevice_t sixChanelCopysSetting;
 #endif // DATASTRUCT_H

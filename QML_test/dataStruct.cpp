@@ -1,6 +1,9 @@
 #include "dataStruct.h"
 
-// Инициализация дефолтного канала
+/*
+ *  Инициализация дефолтного канала
+ * Остальные поля заполняются через конструктор
+*/
 OneChanelToDevice_t oneChanelDefaulsSetting(
     "0000",   // address
     "A",      // type
@@ -21,3 +24,13 @@ SixChanelToDevice_t sixChanelDefaulsSetting = {
     SixChanelToDeviceChanel_t("0000", "B", "P", "0000", "5", "0000"),
     SixChanelToDeviceChanel_t("0000", "B", "P", "0000", "6", "0000")
 };
+
+/*
+ *Структуры для загрузки данных из файла
+*/
+
+OneChanelToDevice_t oneChanelLoadSetting;
+SixChanelToDevice_t sixChanelLoadsSetting;
+
+OneChanelToDevice_t oneChanelCopySetting;
+SixChanelToDevice_t sixChanelCopysSetting;

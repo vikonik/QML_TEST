@@ -38,6 +38,7 @@ public slots:
     void setSelectedRow(int row);
 
     void updateCellsInRange(int startRow, int startCol, int endRow, int endCol, const QString &value);
+    void defaultSetupSelectedRow();
 signals:
     void dataProcessed();
     void selectedRowChanged();

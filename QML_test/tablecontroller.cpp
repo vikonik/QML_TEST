@@ -42,8 +42,11 @@ void TableController::processRow(int rowIndex)
             // Извлекаем нужные данные
             m_serialText = device.address;
             m_minAngleText = device.tiltAngle;
-            m_typeText = device.versionFW;
-
+            //m_typeText = device.versionFW;
+            if(device.type == "A")
+                m_typeText = "1-CH";
+            else
+                m_typeText = "Unknown";
             // Форматируем дату
             QString formattedDay = device.day.length() == 1 ? "0" + device.day : device.day;
             QString formattedMonth = device.month.length() == 1 ? "0" + device.month : device.month;
@@ -74,8 +77,11 @@ void TableController::processRow(int rowIndex)
 
             // Заполняем данные устройства
             m_serialText = device.address;
-            m_typeText = device.versionFW;
-
+          //  m_typeText = device.versionFW;
+            if(device.type == "B")
+                m_typeText = "6-CH";
+            else
+                m_typeText = "Unknown";
             // Форматирование даты
             QString formattedDay = device.day.length() == 1 ? "0" + device.day : device.day;
             QString formattedMonth = device.month.length() == 1 ? "0" + device.month : device.month;
@@ -87,7 +93,19 @@ void TableController::processRow(int rowIndex)
                 .arg(formattedYear);
 
             // Для многоканальных устройств minAngle может быть не применим
-            m_minAngleText = "N/A";
+           // m_minAngleText = "N/A";
+
+
+                    switch ( rowInfo.channelIndex) {
+                        case 0: m_minAngleText =  device.chanel_1.endangle;break;
+                        case 1: m_minAngleText =  device.chanel_2.endangle;break;
+                        case 2: m_minAngleText =  device.chanel_3.endangle;break;
+                        case 3: m_minAngleText =  device.chanel_4.endangle;break;
+                        case 4: m_minAngleText =  device.chanel_5.endangle;break;
+                        case 5: m_minAngleText =  device.chanel_6.endangle;break;
+                        default: m_minAngleText = "N/A";break;
+                    }
+
         } else {
             qWarning() << "Invalid device index for SixChannelDevice:" << rowInfo.deviceIndex;
             resetDisplayValues();
@@ -244,4 +262,56 @@ QString TableController::getSerialFromSixChannel(int deviceIndex) const
     }
 
     return QString();
+}
+
+/*
+Устанаваливаем настройки поумолчанию для выбранной строки
+*/
+void TableController::defaultSetupSelectedRow(){
+    if (!m_model || m_selectedRow < 0 || !m_dataParser) {
+           qWarning() << "Cannot update serial value: model not set, no row selected, or data parser not set";
+           return;
+       }
+
+    // Получаем информацию о типе строки
+    TableModel::TableRowInfo rowInfo = m_model->getRowInfo(m_selectedRow);
+
+    if (rowInfo.deviceType == TableModel::OneChannelDevice) {
+        // Обновление одноканального устройства
+        QVector<OneChanel_t> devices = m_dataParser->getOneChanelDevices();
+
+        if (rowInfo.deviceIndex >= 0 && rowInfo.deviceIndex < devices.size()) {
+            // Обновляем исходные данные
+            //devices[rowInfo.deviceIndex].address = newValue;
+            devices[rowInfo.deviceIndex].group_1 = "9999";
+
+
+
+            m_dataParser->setOneChanelDevices(devices);
+        }
+    } else if (rowInfo.deviceType == TableModel::SixChannelDevice) {
+        // Обновление шестиканального устройства
+        QVector<SixChanel_t> devices = m_dataParser->getSixChanelDevices();
+
+        if (rowInfo.deviceIndex >= 0 && rowInfo.deviceIndex < devices.size()) {
+            // Обновляем исходные данные (только для первого канала)
+            //!!!devices[rowInfo.deviceIndex].address = newValue;
+
+            // Здесь нужно добавить метод в DataParser для обновления шестиканальных устройств
+            // m_dataParser->setSixChanelDevices(devices);
+        }
+    }
+
+    // Обновляем значение в модели
+//    m_model->updateCell(m_selectedRow, 0, newValue);
+
+//    // Также обновляем наше свойство для PanelInfo
+//    m_serialText = newValue;
+    emit dataProcessed();
+
+    m_model->resortTable();
+
+
+//    qDebug() << "Updated serial value to:" << newValue << "for row:" << m_selectedRow << "m_serialText " << m_serialText;
+
 }
