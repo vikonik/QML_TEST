@@ -109,16 +109,29 @@ Rectangle{
 
                 // Обработка нажатия Enter
                 onAccepted: {
+                    finishEditing()
+                    focus = false
+//                    // Нормализуем значение перед отправкой
+//                    let num = parseInt(text, 10);
+//                    if (isNaN(num)) num = 0;
+//                    num = Math.max(0, Math.min(9999, num));
+//                    let padded = ("0000" + num).slice(-4);  // дополняем нулями до 4-х символов
+//                    text = padded;
+//                    // Вызываем метод контроллера для обновления значения
+//                    tableController.updateSerialValue(text)
+                }
+
+                function finishEditing() {
                     // Нормализуем значение перед отправкой
                     let num = parseInt(text, 10);
                     if (isNaN(num)) num = 0;
                     num = Math.max(0, Math.min(9999, num));
                     let padded = ("0000" + num).slice(-4);  // дополняем нулями до 4-х символов
                     text = padded;
+
                     // Вызываем метод контроллера для обновления значения
                     tableController.updateSerialValue(text)
                 }
-
                 // Обновляем свойство при изменении текста
                 onTextChanged: {
                     //serialText = text

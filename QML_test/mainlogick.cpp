@@ -99,6 +99,10 @@ void MainLogick::setConnect(){
     connect(buttonHandler, &ButtonHandler::signalSendData,
             serial,
             static_cast<bool (Serial::*)(const QByteArray &)>(&Serial::sendData));
+
+    connect(tableModel, &TableModel::dataChanged, this, [this](){
+        dataParser->setOneChanelDevices(tableModel->getOneChanelData());
+    });
 }
 
 /**/

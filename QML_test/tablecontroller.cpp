@@ -167,6 +167,27 @@ void TableController::updateSerialValue(const QString &newValue)
     qDebug() << "Updated serial value to:" << newValue << "for row:" << m_selectedRow << "m_serialText " << m_serialText;
 }
 
+/*
+Обновление любой ячейки
+*/
+void TableController::updateCellValue(int row, int column, const QString &value) {
+    // Обновляет ЛЮБУЮ ячейку
+    m_model->updateCell(row, column, value);
+
+    // Синхронизация с DataParser (главное отличие!)
+    if (m_dataParser) {
+        m_dataParser->setOneChanelDevices(m_model->getOneChanelData());
+        // И для шестиканальных устройств, если нужно
+       // m_dataParser->setSixChanelDevices(m_model->getSixChanelData());
+    }
+
+    // Дополнительная логика только для Serial ID
+    if (column == 0) {
+        m_serialText = value;
+        emit dataProcessed();
+        m_model->resortTable();
+    }
+}
 /**/
 int TableController::selectedRow() const
 {
@@ -212,7 +233,7 @@ void TableController::updateCellsInRange(int startRow, int startCol, int endRow,
 
     for (int row = minRow; row <= maxRow; ++row) {
         for (int col = minCol; col <= maxCol; ++col) {
-            if (col >= 5 && col <= 8) { // Только столбцы 5-8
+            if (col >= 5 && col <= 12) { // Только столбцы 5-8
                 m_model->updateCell(row, col, value);
             }
         }

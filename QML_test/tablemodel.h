@@ -76,7 +76,7 @@ public slots:
 
 signals:
     void editableColumnsChanged();
-
+    void dataChangedExternally();
 private:
     QList<QList<QVariant>> m_data;
     QList<int> m_editableColumns; // Индексы редактируемых столбцов

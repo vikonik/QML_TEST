@@ -392,6 +392,8 @@ void TableModel::updateCell(int row, int column, const QVariant &value) {
     // Уведомляем об изменении конкретной строки
     QModelIndex modelIndex = createIndex(row, 0);
     emit dataChanged(modelIndex, modelIndex, {RowDataRole});
+
+    emit dataChangedExternally();
 }
 
 bool TableModel::saveCSV(const QString &filePath) {
