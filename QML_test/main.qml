@@ -361,7 +361,7 @@ anchors.leftMargin: 10
                 y: 503 - titleBar.height
                 buttonText: "Reset"
                 buttonId:"buttonsBlindsControl"
-                resetImageDefault:      "qrc:/Image/buttonsBlindsControl/buttonBlindsUp_default.png"
+                resetImageDefault:      "qrc:/Image/buttonsBlindsControl/reset_default.png"
  //               resetImageDefault:    "qrc:/Image/buttonsBlindsControl/reset_default.png"
             }
 
@@ -371,7 +371,7 @@ anchors.leftMargin: 10
                 y: 651 - titleBar.height
                 buttonText: "Reset all"
                 buttonId:"buttonsBlindsControlAll"
-                resetImageDefault:      "qrc:/Image/buttonsBlindsControl/buttonBlindsUp_default.png"
+                resetImageDefault:      "qrc:/Image/buttonsBlindsControl/resetAll_default.png"
 //                resetImageDefault: "qrc:/Image/buttonsBlindsControl/reset_all.png"
 //                resetImageHover:
 //                resetImagePteset:

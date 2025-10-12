@@ -101,5 +101,7 @@
         <file>Image/iconTilt.png</file>
         <file>CustomCheckBoxTable.qml</file>
         <file>Image/iconError.png</file>
+        <file>Image/buttonsBlindsControl/reset_default.png</file>
+        <file>Image/buttonsBlindsControl/resetAll_default.png</file>
     </qresource>
 </RCC>

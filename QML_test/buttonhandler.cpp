@@ -1303,19 +1303,38 @@ QByteArray cmd;
 /***********************************/
 void ButtonHandler::handlebuttonGroupUp(){
     qDebug() << "Group Up with value:" << m_groupMovingValue;
-
+    QByteArray cmd;
+    cmd.append(">");
+    cmd.append(m_groupMovingValue);
+    cmd.append("ru<");
+ emit signalSendData(cmd);
 }
 
 void ButtonHandler::handlebuttonGroupDown(){
     qDebug() << "Group DN with value:" << m_groupMovingValue;
+    QByteArray cmd;
+    cmd.append(">");
+    cmd.append(m_groupMovingValue);
+    cmd.append("rd<");
+     emit signalSendData(cmd);
 }
 void ButtonHandler::handlebuttonGroupUpLeft(){
 
     qDebug() << "Group Up_Left with value:" << m_groupMovingValue;
+    QByteArray cmd;
+    cmd.append(">");
+    cmd.append(m_groupMovingValue);
+    cmd.append("tu<");
+     emit signalSendData(cmd);
 }
 void ButtonHandler::handlebuttonGroupDownRight(){
 
     qDebug() << "Group DN_Right with value:" << m_groupMovingValue;
+    QByteArray cmd;
+    cmd.append(">");
+    cmd.append(m_groupMovingValue);
+    cmd.append("td<");
+    emit signalSendData(cmd);
 }
 
 

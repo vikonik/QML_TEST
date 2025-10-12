@@ -103,6 +103,7 @@ void MainLogick::setConnect(){
     connect(tableModel, &TableModel::dataChanged, this, [this](){
         dataParser->setOneChanelDevices(tableModel->getOneChanelData());
     });
+
 }
 
 /**/
