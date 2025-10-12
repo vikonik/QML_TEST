@@ -13,6 +13,7 @@ ButtonHandler::ButtonHandler(QObject *parent) : QObject(parent) {}
 void ButtonHandler::setTableController(TableController *controller)
 {
     m_tableController = controller;
+    m_groupMovingValue = "1000";
 }
 
 void ButtonHandler::onButtonClicked(const QString &buttonId) {
@@ -39,7 +40,12 @@ void ButtonHandler::onButtonClicked(const QString &buttonId) {
         {"buttonsBlindsControlAllbutton_UpLeft", [this]()    { handlebuttonsBlindsControlAllbutton_UpLeft(); }},
         {"buttonsBlindsControlAllbutton_Stop", [this]()      { handlebuttonsBlindsControlAllbutton_Stop(); }},
         {"buttonsBlindsControlAllbutton_Down", [this]()      { handlebuttonsBlindsControlAllbutton_Down(); }},
-        {"buttonsBlindsControlAllbutton_DownRight", [this]() { handlebuttonsBlindsControlAllbutton_DownRight(); }}
+        {"buttonsBlindsControlAllbutton_DownRight", [this]() { handlebuttonsBlindsControlAllbutton_DownRight(); }},
+
+        {"buttonGroupUp", [this]()          { handlebuttonGroupUp(); }},
+        {"buttonGroupDown", [this]()        { handlebuttonGroupDown(); }},
+        {"buttonGroupUpLeft", [this]()      { handlebuttonGroupUpLeft(); }},
+        {"buttonGroupDownRight", [this]()   { handlebuttonGroupDownRight(); }}
 
 //        {"stop", [this]() { stopProcess(); }},
 //        {"reset", [this]() { resetProcess(); }}
@@ -1292,4 +1298,37 @@ QByteArray cmd;
         cmd.append("<");
 
     emit signalSendData(cmd);
+}
+
+/***********************************/
+void ButtonHandler::handlebuttonGroupUp(){
+    qDebug() << "Group Up with value:" << m_groupMovingValue;
+
+}
+
+void ButtonHandler::handlebuttonGroupDown(){
+    qDebug() << "Group DN with value:" << m_groupMovingValue;
+}
+void ButtonHandler::handlebuttonGroupUpLeft(){
+
+    qDebug() << "Group Up_Left with value:" << m_groupMovingValue;
+}
+void ButtonHandler::handlebuttonGroupDownRight(){
+
+    qDebug() << "Group DN_Right with value:" << m_groupMovingValue;
+}
+
+
+QString ButtonHandler::groupMovingValue() const
+{
+    return m_groupMovingValue;
+}
+
+void ButtonHandler::setGroupMovingValue(const QString &value)
+{
+    if (m_groupMovingValue != value) {
+        m_groupMovingValue = value;
+        emit groupMovingValueChanged();  // Уведомляем об изменении
+        qDebug() << "Group moving value changed to:" << value;
+    }
 }

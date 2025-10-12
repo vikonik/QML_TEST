@@ -7,6 +7,7 @@
 
 class ButtonHandler : public QObject {
     Q_OBJECT
+    Q_PROPERTY(QString groupMovingValue READ groupMovingValue WRITE setGroupMovingValue NOTIFY groupMovingValueChanged)
 
 public:
     explicit ButtonHandler(QObject *parent = nullptr);
@@ -21,6 +22,7 @@ signals:
     void signalProgramRequest(const QString &deviceData);  // Измененный сигнал с QString
     void signalLoadFromFile(const QString &filePath);  // Новый сигнал для загрузки из файла
     void signalSendData(const QByteArray &data);
+    void groupMovingValueChanged();
 
 public slots:
     void onButtonClicked(const QString &buttonId);
@@ -28,8 +30,14 @@ public slots:
     void loadFromFileDialog();  // Новый слот для вызова диалога
     Q_INVOKABLE bool loadDataFromFile(const QString &filePath);
 
+
+    QString groupMovingValue() const;
+    void setGroupMovingValue(const QString &value);
+
 private:
     TableController* m_tableController;
+    QString m_groupMovingValue;
+
     void handleReadButton();
     void handleProgramButton();
     void handleDefaultSetupButton();//
@@ -49,6 +57,12 @@ private:
     void handlebuttonsBlindsControlAllbutton_Stop();
     void handlebuttonsBlindsControlAllbutton_Down();
     void handlebuttonsBlindsControlAllbutton_DownRight();
+
+    //Управление группой контроллеров
+    void handlebuttonGroupUp();
+    void handlebuttonGroupDown();
+    void handlebuttonGroupUpLeft();
+    void handlebuttonGroupDownRight();
 
     QString serializeOneChannelData() const;  // Сериализация 1-канального устройства
     QString serializeSixChannelData() const;  // Сериализация 6-канального устройства

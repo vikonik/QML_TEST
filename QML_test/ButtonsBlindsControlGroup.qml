@@ -7,7 +7,7 @@ Rectangle {
     width: 223
     height: 42
     color: "transparent"
-
+//property var buttonHandler
     Row {
         anchors.fill: parent
         spacing: 1  // Добавляем отступ между элементами в Row
@@ -66,6 +66,12 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 //onTextChanged: console.log("TextInput: ", text)
+                // Обновляем свойство в C++ при изменении текста
+                onTextChanged: {
+                    if (buttonHandler && buttonHandler.groupMovingValue !== text) {
+                        buttonHandler.groupMovingValue = text;
+                    }
+                }
             }
 
         }
@@ -107,4 +113,14 @@ Rectangle {
         }
 
     }
+
+    Connections {
+        target: buttonHandler
+        onGroupMovingValueChanged: {
+            if (groupMouvingVal.text !== buttonHandler.groupMovingValue) {
+                groupMouvingVal.text = buttonHandler.groupMovingValue;
+            }
+        }
+
+}
 }
