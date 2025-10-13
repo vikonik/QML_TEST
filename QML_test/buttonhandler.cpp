@@ -648,7 +648,7 @@ bool ButtonHandler::parseOneChannelLine(const QString &line, OneChanel_t &device
     QString data = line.mid(11); // Длина "ONECHANNEL:"
 
     // Парсим данные (пример формата: "address=1234;type=1;flag=0;versionFW=2;...")
-    QStringList pairs = data.split(';', Qt::SkipEmptyParts);
+    QStringList pairs = data.split(';'/*, Qt::SkipEmptyParts*/);
 
     for (const QString &pair : pairs) {
         QStringList keyValue = pair.split('=');
@@ -689,7 +689,7 @@ bool ButtonHandler::parseSixChannelLine(const QString &line, SixChanel_t &device
     QString data = line.mid(10); // Длина "SIXCHANNEL:"
 
     // Парсим данные
-    QStringList pairs = data.split(';', Qt::SkipEmptyParts);
+    QStringList pairs = data.split(';'/*, Qt::SkipEmptyParts*/);
 
     for (const QString &pair : pairs) {
         QStringList keyValue = pair.split('=');
