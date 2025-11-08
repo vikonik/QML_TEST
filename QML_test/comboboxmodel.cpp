@@ -48,3 +48,8 @@ QString ComboBoxModel::getSelectedItem() {
     return currentText();
 }
 
+/**/
+void ComboBoxModel::comboBoxOpened(){
+    emit signalConectedPortUpdate();
+
+}

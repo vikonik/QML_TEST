@@ -104,6 +104,7 @@ void MainLogick::setConnect(){
         dataParser->setOneChanelDevices(tableModel->getOneChanelData());
     });
 
+    connect(&comboBoxModel, &ComboBoxModel::signalConectedPortUpdate, this, &MainLogick::refreshComPorts );
 }
 
 /**/

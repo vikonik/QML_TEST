@@ -40,6 +40,22 @@ Item {
                     comboBoxModel.currentIndex = currentIndex;
                     console.log("Выбрано:", comboBoxModel.currentText);
                 }
+//                // Обработчик клика мыши
+//                MouseArea {
+//                    anchors.fill: parent
+//                    onClicked: {
+//                        console.log("ComboBox clicked");
+//                        // Вызываем C++ функцию
+//                        comboBoxModel.onComboBoxClicked();
+//                    }
+//                }
+                // Сигнал при нажатии (открытии) ComboBox
+                onPressedChanged: {
+                    if (pressed) {
+                        console.log("ComboBox pressed");
+                        comboBoxModel.comboBoxOpened();
+                    }
+                }
 
                 //            // Цвет текста текущего выбранного элемента
                 //            textRole: "color"

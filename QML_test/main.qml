@@ -121,10 +121,6 @@ ApplicationWindow {
                     dragStartY =  mouse.y
                     initialWindowX = mainWindow.x
                     initialWindowY = mainWindow.y
-                    //                    console.log("Window Position -> x =", mainWindow.x,
-                    //                                ", y =", mainWindow.y,
-                    //                                ", Mouse -> globalX =", mouse.globalX, ", globalY =", mouse.globalY)
-
                 }
 
                 onPositionChanged: {

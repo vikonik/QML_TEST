@@ -32,7 +32,13 @@ signals:
     void itemsChanged();
     void currentIndexChanged();
     void currentTextChanged();
+    void signalConectedPortUpdate();
 
+public slots:
+    // Слоты для вызова из QML
+//    void handleComboBoxClicked();
+//    void onComboBoxClicked();
+    void comboBoxOpened();
 private:
     QStringList m_items;
     int m_currentIndex = -1;
